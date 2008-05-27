@@ -42,7 +42,7 @@ public class SerialVersionUID {
             out = new DataOutputStream(bout);
 
             // 1. write class name
-            log.info("CLASS: " + el.asType().toString());
+            log.fine("CLASS: " + el.asType().toString());
             ClassInfo clazzInfo = new ClassInfo(el);
             out.writeUTF(clazzInfo.getName());
 
@@ -51,7 +51,7 @@ public class SerialVersionUID {
 
             // 3. write ordered interfaces
             List<String> interfaces = getInterfaces(el.getInterfaces());
-            log.info("INTERFACES: " + interfaces);
+            log.fine("INTERFACES: " + interfaces);
             for (String interfejz : interfaces) {
                 out.writeUTF(interfejz);
             }
@@ -69,7 +69,7 @@ public class SerialVersionUID {
              */
             List<? extends Element> elements = el.getEnclosedElements();
             List<FieldInfo> fields = getFields(elements);
-            log.info("FIELDS: " + fields);
+            log.fine("FIELDS: " + fields);
             for (FieldInfo field : fields) {
                 out.writeUTF(field.getName());
                 out.writeInt(field.getSvuidAccess());
@@ -84,7 +84,7 @@ public class SerialVersionUID {
              * encoding.
              */
             if (hasStaticInit(elements)) {
-                log.info("HAS STATIC INIT");
+                log.fine("HAS STATIC INIT");
                 out.writeUTF("<clinit>");
                 out.writeInt(OpCodes.ACC_STATIC);
                 out.writeUTF("()V");
@@ -97,7 +97,7 @@ public class SerialVersionUID {
              * descriptor of the method in UTF encoding.
              */
             List<MethodInfo> constructors = getConstructors(elements);
-            log.info("CONSTRUCTORS: " + constructors);
+            log.fine("CONSTRUCTORS: " + constructors);
             for (MethodInfo constructor : constructors) {
                 out.writeUTF(constructor.getName());
                 out.writeInt(constructor.getSvuidAccess());
@@ -111,7 +111,7 @@ public class SerialVersionUID {
              * descriptor of the method in UTF encoding.
              */
             List<MethodInfo> methods = getMethods(elements);
-            log.info("METHODS: " + methods);
+            log.fine("METHODS: " + methods);
             for (MethodInfo method : methods) {
                 out.writeUTF(method.getName());
                 out.writeInt(method.getSvuidAccess());
