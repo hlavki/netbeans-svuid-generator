@@ -4,7 +4,6 @@
  */
 package eu.easyedu.netbeans.svuid;
 
-import com.sun.source.tree.Tree;
 import java.util.List;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
@@ -27,7 +26,7 @@ public class Descriptor {
      * <p>Note that <code>toJvmName(toJvmName(s))</code> is equivalent
      * to <code>toJvmName(s)</code>.
      */
-    public static String toJvmName(String classname) {
+    private static String toJvmName(String classname) {
         return classname.replace('.', '/');
     }
 
@@ -38,7 +37,7 @@ public class Descriptor {
      * <p>Note that <code>toJvmName(toJvmName(s))</code> is equivalent
      * to <code>toJvmName(s)</code>.
      */
-    public static StringBuffer toJvmName(StringBuffer sb, Name clazzName) {
+    private static StringBuffer toJvmName(StringBuffer sb, Name clazzName) {
         for (int idx = 0; idx < clazzName.length(); idx++) {
             char ch = clazzName.charAt(idx);
             sb.append(ch == '.' ? '/' : ch);
@@ -50,14 +49,8 @@ public class Descriptor {
      * Converts a class name from the internal representation used in
      * the JVM to the normal one used in Java.
      */
-    public static String toJavaName(String classname) {
+    private static String toJavaName(String classname) {
         return classname.replace('/', '.');
-    }
-
-    public static final String of(Tree type) {
-        StringBuffer sb = new StringBuffer();
-//        descriptor(sb, type);
-        return sb.toString();
     }
 
     public static final String of(TypeMirror type) {
