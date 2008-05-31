@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<filesystem>
+    <folder name="org-netbeans-modules-java-hints">
+	<folder name="rules">
+	    <folder name="hints">
+		<folder name="api">
+		    <file name="eu-easyedu-netbeans-svuid-SerialVersionUidHint.instance"/>
+		</folder>
+	    </folder>
+	</folder>
+    </folder>
+    <folder name="Editors">
+	<folder name="text">
+	    <folder name="x-java">
+		<folder name="codegenerators">
+		    <file name="eu-easyedu-netbeans-svuid-SerialVersionGenerator$Factory.instance">
+			<attr name="position" intvalue="900"/>
+		    </file>
+		</folder>
+	    </folder>
+	</folder>
+    </folder>
+</filesystem>
