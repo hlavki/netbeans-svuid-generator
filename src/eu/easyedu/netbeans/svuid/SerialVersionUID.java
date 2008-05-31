@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -42,7 +43,9 @@ public class SerialVersionUID {
             out = new DataOutputStream(bout);
 
             // 1. write class name
-            log.fine("CLASS: " + el.asType().toString());
+            if (log.isLoggable(Level.SEVERE)) {
+                log.fine("CLASS: " + el.asType().toString());
+            }
             ClassInfo clazzInfo = new ClassInfo(el);
             out.writeUTF(clazzInfo.getName());
 
@@ -51,7 +54,9 @@ public class SerialVersionUID {
 
             // 3. write ordered interfaces
             List<String> interfaces = getInterfaces(el.getInterfaces());
-            log.fine("INTERFACES: " + interfaces);
+            if (log.isLoggable(Level.SEVERE)) {
+                log.fine("INTERFACES: " + interfaces);
+            }
             for (String interfejz : interfaces) {
                 out.writeUTF(interfejz);
             }
@@ -69,7 +74,9 @@ public class SerialVersionUID {
              */
             List<? extends Element> elements = el.getEnclosedElements();
             List<FieldInfo> fields = getFields(elements);
-            log.fine("FIELDS: " + fields);
+            if (log.isLoggable(Level.SEVERE)) {
+                log.fine("FIELDS: " + fields);
+            }
             for (FieldInfo field : fields) {
                 out.writeUTF(field.getName());
                 out.writeInt(field.getSvuidAccess());
@@ -97,7 +104,9 @@ public class SerialVersionUID {
              * descriptor of the method in UTF encoding.
              */
             List<MethodInfo> constructors = getConstructors(elements);
-            log.fine("CONSTRUCTORS: " + constructors);
+            if (log.isLoggable(Level.SEVERE)) {
+                log.fine("CONSTRUCTORS: " + constructors);
+            }
             for (MethodInfo constructor : constructors) {
                 out.writeUTF(constructor.getName());
                 out.writeInt(constructor.getSvuidAccess());
@@ -111,7 +120,9 @@ public class SerialVersionUID {
              * descriptor of the method in UTF encoding.
              */
             List<MethodInfo> methods = getMethods(elements);
-            log.fine("METHODS: " + methods);
+            if (log.isLoggable(Level.SEVERE)) {
+                log.fine("METHODS: " + methods);
+            }
             for (MethodInfo method : methods) {
                 out.writeUTF(method.getName());
                 out.writeInt(method.getSvuidAccess());
