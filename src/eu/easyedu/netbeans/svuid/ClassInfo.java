@@ -4,10 +4,7 @@
  */
 package eu.easyedu.netbeans.svuid;
 
-import java.util.Set;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 
 /**
@@ -34,5 +31,10 @@ public class ClassInfo extends ElementInfo {
     @Override
     public int getSvuidAccess() {
         return access & (OpCodes.ACC_PUBLIC | OpCodes.ACC_FINAL | OpCodes.ACC_INTERFACE | OpCodes.ACC_ABSTRACT);
+    }
+    
+    @Override
+    public String getSortingName() {
+        return name + descriptor;
     }
 }
