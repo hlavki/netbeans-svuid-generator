@@ -70,14 +70,14 @@ public class Descriptor {
                 TypeElement typeElement = (TypeElement) declaredType.asElement();
                 sb.append('L');
                 toJvmName(sb, typeElement.getQualifiedName());
-                List<? extends TypeMirror> typeArgs = declaredType.getTypeArguments();
-                if (!typeArgs.isEmpty()) {
-                    sb.append('<');
-                    for (TypeMirror typeArg : typeArgs) {
-                        descriptor(sb, typeArg);
-                    }
-                    sb.append('>');
-                }
+//                List<? extends TypeMirror> typeArgs = declaredType.getTypeArguments();
+//                if (!typeArgs.isEmpty()) {
+//                    sb.append('<');
+//                    for (TypeMirror typeArg : typeArgs) {
+//                        descriptor(sb, typeArg);
+//                    }
+//                    sb.append('>');
+//                }
                 sb.append(';');
                 break;
             case TYPEVAR:

@@ -35,4 +35,9 @@ public class ClassInfo extends ElementInfo {
     public int getSvuidAccess() {
         return access & (OpCodes.ACC_PUBLIC | OpCodes.ACC_FINAL | OpCodes.ACC_INTERFACE | OpCodes.ACC_ABSTRACT);
     }
+    
+    @Override
+    public String getSortingName() {
+        return name + descriptor;
+    }
 }
