@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package eu.easyedu.netbeans.svuid;
 
 import java.util.Set;
@@ -23,11 +22,15 @@ public class MethodInfo extends ElementInfo {
     public boolean includeInSerialVersionUID() {
         return (access & OpCodes.ACC_PRIVATE) == 0;
     }
-    
-    
+
     @Override
     public int getSvuidAccess() {
         return access;
+    }
+
+    @Override
+    public String getSortingName() {
+        return name + descriptor;
     }
 
 }

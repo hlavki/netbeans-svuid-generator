@@ -59,7 +59,7 @@ public abstract class ElementInfo implements Comparable<ElementInfo> {
     }
 
     public int compareTo(ElementInfo o) {
-        return this.name.compareTo(o.name);
+        return this.getSortingName().compareTo(o.getSortingName());
     }
 
     protected String nameToString(Name name) {
@@ -67,4 +67,6 @@ public abstract class ElementInfo implements Comparable<ElementInfo> {
     }
 
     public abstract int getSvuidAccess();
+    
+    public abstract String getSortingName();
 }

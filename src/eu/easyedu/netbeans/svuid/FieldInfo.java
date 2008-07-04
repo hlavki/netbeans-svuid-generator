@@ -28,4 +28,9 @@ public final class FieldInfo extends ElementInfo {
         return access & (OpCodes.ACC_PUBLIC | OpCodes.ACC_PRIVATE | OpCodes.ACC_PROTECTED |
                 OpCodes.ACC_STATIC | OpCodes.ACC_FINAL | OpCodes.ACC_VOLATILE | OpCodes.ACC_TRANSIENT);
     }
+
+    @Override
+    public String getSortingName() {
+        return name;
+    }
 }
