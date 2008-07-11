@@ -12,23 +12,18 @@ import com.sun.source.util.TreePath;
 import eu.easyedu.netbeans.svuid.resources.BundleHelper;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.util.ElementFilter;
-import javax.lang.model.util.Elements;
 import org.netbeans.api.java.source.CompilationInfo;
 import org.netbeans.api.java.source.GeneratorUtilities;
 import org.netbeans.api.java.source.JavaSource;
 import org.netbeans.api.java.source.Task;
 import org.netbeans.api.java.source.WorkingCopy;
 import org.netbeans.modules.editor.java.Utilities;
-import org.netbeans.modules.java.editor.codegen.GeneratorUtils;
 import org.netbeans.modules.java.hints.spi.AbstractHint;
 import org.netbeans.spi.editor.hints.ChangeInfo;
 import org.netbeans.spi.editor.hints.ErrorDescription;
@@ -39,7 +34,6 @@ import org.openide.util.NbBundle;
 
 public class SerialVersionUidHint extends AbstractHint {
 
-//    private static final Set<Tree.Kind> TREE_KINDS = EnumSet.<Tree.Kind>allOf(Tree.Kind.class);
     private static final Set<Tree.Kind> TREE_KINDS = EnumSet.<Tree.Kind>of(Tree.Kind.CLASS);
     protected final WorkingCopy copy = null;
 
@@ -52,20 +46,13 @@ public class SerialVersionUidHint extends AbstractHint {
     }
 
     public List<ErrorDescription> run(CompilationInfo info, TreePath treePath) {
-//	Tree t = treePath.getLeaf();
         try {
-//            Tree parentTree = treePath.getParentPath().getLeaf();
             treePath = Utilities.getPathElementOfKind(Tree.Kind.CLASS, treePath);
             TypeElement typeElement = (TypeElement) info.getTrees().getElement(treePath);
-            if (typeElement.getKind().equals(ElementKind.CLASS) /** && parentTree.getKind().equals(Kind.COMPILATION_UNIT) */
-                    ) {
-                Collection<TypeElement> parents = GeneratorUtils.getAllParents(typeElement);
-                Elements elements = info.getElements();
-                List<VariableElement> fields = ElementFilter.fieldsIn(elements.getAllMembers(typeElement));
-                if (!SerialVersionGenerator.isSerializable(parents) || SerialVersionGenerator.containsSerialVersionField(fields)) {
+            if (typeElement.getKind().equals(ElementKind.CLASS)) {
+                if (!SerialVersionUIDHelper.needsSerialVersionUID(typeElement)) {
                     return Collections.emptyList();
                 }
-
                 List<Fix> fixes = new ArrayList<Fix>();
                 fixes.add(new FixImpl(info.getJavaSource(), info.getFileObject(), treePath, SerialVersionUIDType.DEFAULT));
                 fixes.add(new FixImpl(info.getJavaSource(), info.getFileObject(), treePath, SerialVersionUIDType.GENERATED));
@@ -91,16 +78,16 @@ public class SerialVersionUidHint extends AbstractHint {
     }
 
     public String getId() {
-        return "SerialVersionUid"; // NOI18N
+        return NbBundle.getMessage(BundleHelper.class, "serial-version-hint-id"); // NOI18N
 
     }
 
     public String getDisplayName() {
-        return "SerialVersionUid!";
+        return NbBundle.getMessage(BundleHelper.class, "serial-version-hint-display-name");
     }
 
     public String getDescription() {
-        return "This is a dummy description for the SerialVersionUid hint!";
+        return NbBundle.getMessage(BundleHelper.class, "serial-version-hint-description");
     }
 
     private static final class FixImpl implements Fix {
@@ -136,7 +123,7 @@ public class SerialVersionUidHint extends AbstractHint {
                         svuid = new SerialVersionUID().generate(typeElement);
                     }
                     ClassTree classTree = (ClassTree) path.getLeaf();
-                    VariableTree varTree = SerialVersionGenerator.createSerialVersionUID(copy, svuid);
+                    VariableTree varTree = SerialVersionUIDHelper.createSerialVersionUID(copy, svuid);
                     ClassTree decl = GeneratorUtilities.get(copy).insertClassMember(classTree, varTree);
                     copy.rewrite(classTree, decl);
                 }
