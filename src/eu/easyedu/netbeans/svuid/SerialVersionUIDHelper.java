@@ -75,7 +75,7 @@ public class SerialVersionUIDHelper {
 
     public static boolean needsSerialVersionUID(TypeElement typeElement) {
         return !containsSerialVersionField(typeElement) && isSerializable(typeElement) &&
-                !containsSuppressWarning(typeElement);
+                !containsSuppressWarning(typeElement) && !typeElement.getModifiers().contains(Modifier.ABSTRACT);
     }
 
     private static boolean isSerializable(TypeElement typeElement) {
