@@ -45,14 +45,6 @@ public class Descriptor {
         return sb;
     }
 
-    /**
-     * Converts a class name from the internal representation used in
-     * the JVM to the normal one used in Java.
-     */
-    private static String toJavaName(String classname) {
-        return classname.replace('/', '.');
-    }
-
     public static final String of(TypeMirror type) {
         StringBuffer sb = new StringBuffer();
         descriptor(sb, type);
@@ -70,14 +62,14 @@ public class Descriptor {
                 TypeElement typeElement = (TypeElement) declaredType.asElement();
                 sb.append('L');
                 toJvmName(sb, typeElement.getQualifiedName());
-//                List<? extends TypeMirror> typeArgs = declaredType.getTypeArguments();
-//                if (!typeArgs.isEmpty()) {
-//                    sb.append('<');
-//                    for (TypeMirror typeArg : typeArgs) {
-//                        descriptor(sb, typeArg);
-//                    }
-//                    sb.append('>');
-//                }
+                List<? extends TypeMirror> typeArgs = declaredType.getTypeArguments();
+                if (!typeArgs.isEmpty()) {
+                    sb.append('<');
+                    for (TypeMirror typeArg : typeArgs) {
+                        descriptor(sb, typeArg);
+                    }
+                    sb.append('>');
+                }
                 sb.append(';');
                 break;
             case TYPEVAR:
