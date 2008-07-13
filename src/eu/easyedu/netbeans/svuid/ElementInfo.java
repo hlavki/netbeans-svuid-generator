@@ -67,6 +67,6 @@ public abstract class ElementInfo implements Comparable<ElementInfo> {
     }
 
     public abstract int getSvuidAccess();
-
+    
     public abstract String getSortingName();
 }

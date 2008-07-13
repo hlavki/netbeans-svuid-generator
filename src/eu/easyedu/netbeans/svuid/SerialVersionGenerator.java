@@ -8,30 +8,15 @@ import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.util.TreePath;
-import com.sun.source.util.TreePathScanner;
-import com.sun.source.util.Trees;
 import eu.easyedu.netbeans.svuid.resources.BundleHelper;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeKind;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.ElementFilter;
-import javax.lang.model.util.Elements;
 import javax.swing.text.JTextComponent;
 import org.netbeans.api.java.source.CompilationController;
-import org.netbeans.api.java.source.CompilationInfo;
 import org.netbeans.api.java.source.JavaSource;
 import org.netbeans.api.java.source.ModificationResult;
 import org.netbeans.api.java.source.Task;
@@ -76,16 +61,9 @@ public class SerialVersionGenerator implements CodeGenerator {
             if (typeElement == null || !typeElement.getKind().isClass() || NestingKind.ANONYMOUS.equals(typeElement.getNestingKind())) {
                 return Collections.emptyList();
             }
-//	    final Set<VariableElement> staticFields = new LinkedHashSet<VariableElement>();
-//	    scanForStaticFields(controller, path, staticFields);
-            Elements elements = controller.getElements();
-            List<VariableElement> fields = ElementFilter.fieldsIn(elements.getAllMembers(typeElement));
-
-            Collection<TypeElement> parents = GeneratorUtils.getAllParents(typeElement);
-            if (!isSerializable(parents) || containsSerialVersionField(fields)) {
+            if (!SerialVersionUIDHelper.needsSerialVersionUID(typeElement)) {
                 return Collections.emptyList();
             }
-
             List<CodeGenerator> result = new ArrayList<CodeGenerator>();
             result.add(new SerialVersionGenerator(component, SerialVersionUIDType.DEFAULT));
             result.add(new SerialVersionGenerator(component, SerialVersionUIDType.GENERATED));
@@ -122,7 +100,7 @@ public class SerialVersionGenerator implements CodeGenerator {
                             svuid = new SerialVersionUID().generate(typeElement);
                         }
                         int idx = GeneratorUtils.findClassMemberIndex(copy, (ClassTree) path.getLeaf(), caretOffset);
-                        VariableTree varTree = createSerialVersionUID(copy, svuid);
+                        VariableTree varTree = SerialVersionUIDHelper.createSerialVersionUID(copy, svuid);
                         List<Tree> members = new ArrayList<Tree>(clazz.getMembers());
                         members.add(idx, varTree);
                         TreeMaker make = copy.getTreeMaker();
@@ -139,70 +117,6 @@ public class SerialVersionGenerator implements CodeGenerator {
                 Exceptions.printStackTrace(ex);
             }
         }
-    }
-
-    public final static void scanForStaticFields(CompilationInfo info, final TreePath clsPath,
-            final Set<VariableElement> staticFields) {
-        final Trees trees = info.getTrees();
-        new TreePathScanner<Void, Boolean>() {
-
-            @Override
-            public Void visitVariable(VariableTree node, Boolean p) {
-                if (ERROR.contentEquals(node.getName())) {
-                    return null;
-                }
-                Element el = trees.getElement(getCurrentPath());
-                if (el != null && el.getKind() == ElementKind.FIELD && el.getModifiers().contains(Modifier.STATIC)) {
-                    staticFields.add((VariableElement) el);
-                }
-                return null;
-            }
-        }.scan(clsPath, Boolean.FALSE);
-    }
-
-    public final static boolean containsSerialVersionField(Collection<VariableElement> elements) {
-        boolean result = false;
-        Iterator<VariableElement> it = elements.iterator();
-        while (it.hasNext() && !result) {
-            VariableElement elem = it.next();
-            Set<Modifier> modifiers = elem.getModifiers();
-            TypeMirror typeMirror = elem.asType();
-            StringBuffer sb = new StringBuffer(elem.getSimpleName());
-            result = Constants.SERIAL_VERSION_FIELD.equals(sb.toString()) && modifiers.contains(Modifier.FINAL) &&
-                    modifiers.contains(Modifier.STATIC) && typeMirror.getKind().isPrimitive() &&
-                    typeMirror.getKind().equals(TypeKind.LONG);
-        }
-        return result;
-    }
-
-    public final static boolean isSerializable(Collection<TypeElement> parents) {
-        boolean result = false;
-        Iterator<TypeElement> it = parents.iterator();
-        while (it.hasNext() && !result) {
-            TypeElement type = it.next();
-            StringBuffer qualifiedName = new StringBuffer(type.getQualifiedName());
-            result = (type.getKind().equals(ElementKind.INTERFACE) &&
-                    Constants.SERIALIZABLE_INTERFACE.equals(qualifiedName.toString()));
-        }
-        return result;
-    }
-
-    /**
-     * Creates the <code>serialVersionUID</code> field with
-     * value of <code>serialVersion</code>.
-     * 
-     * @return the created field.
-     */
-    public static final VariableTree createSerialVersionUID(WorkingCopy copy, Long serialVersion) {
-        Set<Modifier> serialVersionUIDModifiers = new HashSet<Modifier>();
-        serialVersionUIDModifiers.add(Modifier.PRIVATE);
-        serialVersionUIDModifiers.add(Modifier.STATIC);
-        serialVersionUIDModifiers.add(Modifier.FINAL);
-        TreeMaker make = copy.getTreeMaker();
-        VariableTree serialVersionUID = make.Variable(make.Modifiers(serialVersionUIDModifiers),
-                Constants.SERIAL_VERSION_FIELD, make.Identifier("long"), make.Literal(Long.valueOf(serialVersion))); //NO18N
-
-        return serialVersionUID;
     }
 }
 

@@ -45,14 +45,6 @@ public class Descriptor {
         return sb;
     }
 
-    /**
-     * Converts a class name from the internal representation used in
-     * the JVM to the normal one used in Java.
-     */
-    private static String toJavaName(String classname) {
-        return classname.replace('/', '.');
-    }
-
     public static final String of(TypeMirror type) {
         StringBuffer sb = new StringBuffer();
         descriptor(sb, type);
