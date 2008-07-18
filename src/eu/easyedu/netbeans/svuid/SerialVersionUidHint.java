@@ -16,7 +16,10 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import org.netbeans.api.java.source.CompilationInfo;
 import org.netbeans.api.java.source.GeneratorUtilities;
@@ -34,6 +37,7 @@ import org.openide.util.NbBundle;
 
 public class SerialVersionUidHint extends AbstractHint {
 
+    private static final Logger log = Logger.getLogger(SerialVersionUidHint.class.getName());
     private static final Set<Tree.Kind> TREE_KINDS = EnumSet.<Tree.Kind>of(Tree.Kind.CLASS);
     protected final WorkingCopy copy = null;
 
@@ -49,6 +53,13 @@ public class SerialVersionUidHint extends AbstractHint {
         try {
             treePath = Utilities.getPathElementOfKind(Tree.Kind.CLASS, treePath);
             TypeElement typeElement = (TypeElement) info.getTrees().getElement(treePath);
+            if (log.isLoggable(Level.FINE)) {
+                log.fine("Type of " + typeElement.asType().toString() + " is " + typeElement.getNestingKind());
+            }
+            if (typeElement.getNestingKind().equals(NestingKind.ANONYMOUS)) {
+                treePath = Utilities.getPathElementOfKind(Tree.Kind.CLASS, treePath.getParentPath());
+                typeElement = (TypeElement) info.getTrees().getElement(treePath);
+            }
             if (typeElement.getKind().equals(ElementKind.CLASS)) {
                 if (!SerialVersionUIDHelper.needsSerialVersionUID(typeElement)) {
                     return Collections.emptyList();

@@ -34,7 +34,6 @@ import org.openide.util.NbBundle;
  */
 public class SerialVersionGenerator implements CodeGenerator {
 
-    private static final String ERROR = "<error>"; //NOI18N
     private SerialVersionUIDType type;
 
     public static class Factory implements CodeGenerator.Factory {

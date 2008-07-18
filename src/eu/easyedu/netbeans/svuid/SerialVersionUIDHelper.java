@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
@@ -33,6 +35,7 @@ import org.netbeans.modules.java.editor.codegen.GeneratorUtils;
  */
 public class SerialVersionUIDHelper {
 
+    private static final Logger log = Logger.getLogger(SerialVersionUIDHelper.class.getName());
     private static final String ERROR = "<error>"; //NOI18N
 
     private SerialVersionUIDHelper() {
@@ -70,6 +73,9 @@ public class SerialVersionUIDHelper {
                     modifiers.contains(Modifier.STATIC) && typeMirror.getKind().isPrimitive() &&
                     typeMirror.getKind().equals(TypeKind.LONG);
         }
+        if (log.isLoggable(Level.FINE)) {
+            log.fine("Class " + typeElement.asType().toString() + (result ? "" : " does not") + " contain serialVersionUID field");
+        }
         return result;
     }
 
@@ -87,6 +93,9 @@ public class SerialVersionUIDHelper {
             StringBuffer qualifiedName = new StringBuffer(type.getQualifiedName());
             result = (type.getKind().equals(ElementKind.INTERFACE) &&
                     Constants.SERIALIZABLE_INTERFACE.equals(qualifiedName.toString()));
+        }
+        if (log.isLoggable(Level.FINE)) {
+            log.fine("Class " + typeElement.asType().toString() + (result ? " is" : " is not") + " serializable");
         }
         return result;
     }
@@ -126,6 +135,10 @@ public class SerialVersionUIDHelper {
                 }
             }
         } catch (IncompleteAnnotationException e) {
+        }
+        if (log.isLoggable(Level.FINE)) {
+            log.fine("Class " + typeElement.asType().toString() + (result ? "" : " does not") +
+                    " contain SuppressWarnings(serial) annotation");
         }
         return result;
     }
