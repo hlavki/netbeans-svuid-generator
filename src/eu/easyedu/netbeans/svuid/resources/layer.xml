@@ -4,7 +4,7 @@
     <folder name="org-netbeans-modules-java-hints">
         <folder name="rules">
             <folder name="hints">
-                <folder name="api">
+                <folder name="general">
                     <file name="eu-easyedu-netbeans-svuid-SerialVersionUidHint.instance"/>
                 </folder>
             </folder>

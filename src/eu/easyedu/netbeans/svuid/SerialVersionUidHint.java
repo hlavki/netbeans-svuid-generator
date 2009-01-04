@@ -16,7 +16,10 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import org.netbeans.api.java.source.CompilationInfo;
 import org.netbeans.api.java.source.GeneratorUtilities;
@@ -25,16 +28,16 @@ import org.netbeans.api.java.source.Task;
 import org.netbeans.api.java.source.WorkingCopy;
 import org.netbeans.modules.editor.java.Utilities;
 import org.netbeans.modules.java.hints.spi.AbstractHint;
+import org.netbeans.modules.parsing.api.Snapshot;
 import org.netbeans.spi.editor.hints.ChangeInfo;
 import org.netbeans.spi.editor.hints.ErrorDescription;
 import org.netbeans.spi.editor.hints.ErrorDescriptionFactory;
 import org.netbeans.spi.editor.hints.Fix;
-import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
 
 public class SerialVersionUidHint extends AbstractHint {
 
-//    private static final Set<Tree.Kind> TREE_KINDS = EnumSet.<Tree.Kind>allOf(Tree.Kind.class);
+    private static final Logger log = Logger.getLogger(SerialVersionUidHint.class.getName());
     private static final Set<Tree.Kind> TREE_KINDS = EnumSet.<Tree.Kind>of(Tree.Kind.CLASS);
     protected final WorkingCopy copy = null;
 
@@ -47,18 +50,24 @@ public class SerialVersionUidHint extends AbstractHint {
     }
 
     public List<ErrorDescription> run(CompilationInfo info, TreePath treePath) {
-//	Tree t = treePath.getLeaf();
         try {
             treePath = Utilities.getPathElementOfKind(Tree.Kind.CLASS, treePath);
             TypeElement typeElement = (TypeElement) info.getTrees().getElement(treePath);
+            if (log.isLoggable(Level.FINE)) {
+                log.fine("Type of " + typeElement.asType().toString() + " is " + typeElement.getNestingKind());
+            }
+            if (typeElement.getNestingKind().equals(NestingKind.ANONYMOUS)) {
+                treePath = Utilities.getPathElementOfKind(Tree.Kind.CLASS, treePath.getParentPath());
+                typeElement = (TypeElement) info.getTrees().getElement(treePath);
+            }
             if (typeElement.getKind().equals(ElementKind.CLASS)) {
                 if (!SerialVersionUIDHelper.needsSerialVersionUID(typeElement)) {
                     return Collections.emptyList();
                 }
-
                 List<Fix> fixes = new ArrayList<Fix>();
-                fixes.add(new FixImpl(info.getJavaSource(), info.getFileObject(), treePath, SerialVersionUIDType.DEFAULT));
-                fixes.add(new FixImpl(info.getJavaSource(), info.getFileObject(), treePath, SerialVersionUIDType.GENERATED));
+                Snapshot snapshot = info.getSnapshot();
+                fixes.add(new FixImpl(info.getJavaSource(), treePath, SerialVersionUIDType.DEFAULT));
+                fixes.add(new FixImpl(info.getJavaSource(), treePath, SerialVersionUIDType.GENERATED));
 
                 int[] span = info.getTreeUtilities().findNameSpan((ClassTree) treePath.getLeaf());
                 return Collections.<ErrorDescription>singletonList(
@@ -81,28 +90,26 @@ public class SerialVersionUidHint extends AbstractHint {
     }
 
     public String getId() {
-        return "SerialVersionUid"; // NOI18N
+        return NbBundle.getMessage(BundleHelper.class, "serial-version-hint-id"); // NOI18N
 
     }
 
     public String getDisplayName() {
-        return "SerialVersionUid!";
+        return NbBundle.getMessage(BundleHelper.class, "serial-version-hint-display-name");
     }
 
     public String getDescription() {
-        return "This is a dummy description for the SerialVersionUid hint!";
+        return NbBundle.getMessage(BundleHelper.class, "serial-version-hint-description");
     }
 
     private static final class FixImpl implements Fix {
 
         private JavaSource js;
-        private FileObject file;
         private TreePath path;
         private SerialVersionUIDType type;
 
-        public FixImpl(JavaSource js, FileObject file, TreePath path, SerialVersionUIDType type) {
+        public FixImpl(JavaSource js, TreePath path, SerialVersionUIDType type) {
             this.js = js;
-            this.file = file;
             this.path = path;
             this.type = type;
         }
