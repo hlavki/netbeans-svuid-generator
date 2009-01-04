@@ -28,7 +28,6 @@ import org.netbeans.api.java.source.Task;
 import org.netbeans.api.java.source.WorkingCopy;
 import org.netbeans.modules.editor.java.Utilities;
 import org.netbeans.modules.java.hints.spi.AbstractHint;
-import org.netbeans.modules.parsing.api.Snapshot;
 import org.netbeans.spi.editor.hints.ChangeInfo;
 import org.netbeans.spi.editor.hints.ErrorDescription;
 import org.netbeans.spi.editor.hints.ErrorDescriptionFactory;
@@ -65,7 +64,6 @@ public class SerialVersionUidHint extends AbstractHint {
                     return Collections.emptyList();
                 }
                 List<Fix> fixes = new ArrayList<Fix>();
-                Snapshot snapshot = info.getSnapshot();
                 fixes.add(new FixImpl(info.getJavaSource(), treePath, SerialVersionUIDType.DEFAULT));
                 fixes.add(new FixImpl(info.getJavaSource(), treePath, SerialVersionUIDType.GENERATED));
 
