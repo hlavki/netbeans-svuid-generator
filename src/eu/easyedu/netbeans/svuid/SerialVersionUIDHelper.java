@@ -81,7 +81,8 @@ public class SerialVersionUIDHelper {
 
     public static boolean needsSerialVersionUID(TypeElement typeElement) {
         return !containsSerialVersionField(typeElement) && isSerializable(typeElement) &&
-                !containsSuppressWarning(typeElement) && !typeElement.getModifiers().contains(Modifier.ABSTRACT);
+                !containsSuppressWarning(typeElement, SuppressWarning.SERIAL) &&
+                !typeElement.getModifiers().contains(Modifier.ABSTRACT);
     }
 
     private static boolean isSerializable(TypeElement typeElement) {
@@ -123,7 +124,7 @@ public class SerialVersionUIDHelper {
      * @param typeElement
      * @return
      */
-    private static boolean containsSuppressWarning(TypeElement typeElement) {
+    private static boolean containsSuppressWarning(TypeElement typeElement, SuppressWarning suppressWarning) {
         boolean result = false;
         SuppressWarnings suppressAnnotation = typeElement.getAnnotation(SuppressWarnings.class);
         try {
@@ -131,7 +132,7 @@ public class SerialVersionUIDHelper {
                 String[] values = suppressAnnotation.value();
                 int idx = 0;
                 while (idx < values.length && result == false) {
-                    result = "serial".equals(values[idx++]);
+                    result = suppressWarning.getCode().equals(values[idx++]);
                 }
             }
         } catch (IncompleteAnnotationException e) {
