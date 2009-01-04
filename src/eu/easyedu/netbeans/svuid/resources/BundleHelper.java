@@ -9,4 +9,7 @@ package eu.easyedu.netbeans.svuid.resources;
  * @author hlavki
  */
 public final class BundleHelper {
+
+    private BundleHelper() {
+    }
 }

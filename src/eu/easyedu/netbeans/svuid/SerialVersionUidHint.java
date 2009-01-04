@@ -28,11 +28,11 @@ import org.netbeans.api.java.source.Task;
 import org.netbeans.api.java.source.WorkingCopy;
 import org.netbeans.modules.editor.java.Utilities;
 import org.netbeans.modules.java.hints.spi.AbstractHint;
+import org.netbeans.modules.parsing.api.Snapshot;
 import org.netbeans.spi.editor.hints.ChangeInfo;
 import org.netbeans.spi.editor.hints.ErrorDescription;
 import org.netbeans.spi.editor.hints.ErrorDescriptionFactory;
 import org.netbeans.spi.editor.hints.Fix;
-import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
 
 public class SerialVersionUidHint extends AbstractHint {
@@ -65,8 +65,9 @@ public class SerialVersionUidHint extends AbstractHint {
                     return Collections.emptyList();
                 }
                 List<Fix> fixes = new ArrayList<Fix>();
-                fixes.add(new FixImpl(info.getJavaSource(), info.getFileObject(), treePath, SerialVersionUIDType.DEFAULT));
-                fixes.add(new FixImpl(info.getJavaSource(), info.getFileObject(), treePath, SerialVersionUIDType.GENERATED));
+                Snapshot snapshot = info.getSnapshot();
+                fixes.add(new FixImpl(info.getJavaSource(), treePath, SerialVersionUIDType.DEFAULT));
+                fixes.add(new FixImpl(info.getJavaSource(), treePath, SerialVersionUIDType.GENERATED));
 
                 int[] span = info.getTreeUtilities().findNameSpan((ClassTree) treePath.getLeaf());
                 return Collections.<ErrorDescription>singletonList(
@@ -104,20 +105,18 @@ public class SerialVersionUidHint extends AbstractHint {
     private static final class FixImpl implements Fix {
 
         private JavaSource js;
-        private FileObject file;
         private TreePath path;
         private SerialVersionUIDType type;
 
-        public FixImpl(JavaSource js, FileObject file, TreePath path, SerialVersionUIDType type) {
+        public FixImpl(JavaSource js, TreePath path, SerialVersionUIDType type) {
             this.js = js;
-            this.file = file;
             this.path = path;
             this.type = type;
         }
 
         public String getText() {
-            String msg = type.equals(SerialVersionUIDType.DEFAULT) 
-                ? Constants.SVUID_DEFAULT_LABEL : Constants.SVUID_GENERATED_LABEL;
+            String msg = type.equals(SerialVersionUIDType.DEFAULT)
+                    ? Constants.SVUID_DEFAULT_LABEL : Constants.SVUID_GENERATED_LABEL;
             return NbBundle.getMessage(BundleHelper.class, msg);
         }
 
@@ -126,7 +125,6 @@ public class SerialVersionUidHint extends AbstractHint {
 
                 public void run(WorkingCopy copy) throws Exception {
                     copy.toPhase(JavaSource.Phase.ELEMENTS_RESOLVED);
-//		    TreePath path = copy.getTreeUtilities().pathFor(caretOffset);
                     path = Utilities.getPathElementOfKind(Tree.Kind.CLASS, path);
                     long svuid = 1L;
                     if (type.equals(SerialVersionUIDType.GENERATED)) {

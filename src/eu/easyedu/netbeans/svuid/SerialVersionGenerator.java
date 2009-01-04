@@ -23,9 +23,10 @@ import org.netbeans.api.java.source.Task;
 import org.netbeans.api.java.source.TreeMaker;
 import org.netbeans.api.java.source.WorkingCopy;
 import org.netbeans.modules.editor.java.Utilities;
-import org.netbeans.modules.java.editor.codegen.CodeGenerator;
 import org.netbeans.modules.java.editor.codegen.GeneratorUtils;
+import org.netbeans.spi.editor.codegen.CodeGenerator;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -35,36 +36,42 @@ import org.openide.util.NbBundle;
 public class SerialVersionGenerator implements CodeGenerator {
 
     private SerialVersionUIDType type;
+    private JTextComponent component;
 
     public static class Factory implements CodeGenerator.Factory {
 
         public Factory() {
         }
 
-        public Iterable<? extends CodeGenerator> create(CompilationController controller, TreePath path) throws IOException {
+        public List<? extends CodeGenerator> create(Lookup context) {
+            JTextComponent component = context.lookup(JTextComponent.class);
+            CompilationController controller = context.lookup(CompilationController.class);
+            TreePath path = context.lookup(TreePath.class);
             path = Utilities.getPathElementOfKind(Tree.Kind.CLASS, path);
-            if (path == null) {
-                return Collections.emptySet();
+            if (component == null || controller == null || path == null) {
+                return Collections.emptyList();
             }
-            controller.toPhase(JavaSource.Phase.ELEMENTS_RESOLVED);
+            try {
+                controller.toPhase(JavaSource.Phase.ELEMENTS_RESOLVED);
+            } catch (IOException e) {
+                return Collections.emptyList();
+            }
             TypeElement typeElement = (TypeElement) controller.getTrees().getElement(path);
             if (typeElement == null || !typeElement.getKind().isClass() || NestingKind.ANONYMOUS.equals(typeElement.getNestingKind())) {
-                return Collections.emptySet();
+                return Collections.emptyList();
             }
-//	    final Set<VariableElement> staticFields = new LinkedHashSet<VariableElement>();
-//	    scanForStaticFields(controller, path, staticFields);
             if (!SerialVersionUIDHelper.needsSerialVersionUID(typeElement)) {
-                return Collections.emptySet();
+                return Collections.emptyList();
             }
-
             List<CodeGenerator> result = new ArrayList<CodeGenerator>();
-            result.add(new SerialVersionGenerator(SerialVersionUIDType.DEFAULT));
-            result.add(new SerialVersionGenerator(SerialVersionUIDType.GENERATED));
+            result.add(new SerialVersionGenerator(component, SerialVersionUIDType.DEFAULT));
+            result.add(new SerialVersionGenerator(component, SerialVersionUIDType.GENERATED));
             return result;
         }
     }
 
-    public SerialVersionGenerator(SerialVersionUIDType type) {
+    public SerialVersionGenerator(JTextComponent component, SerialVersionUIDType type) {
+        this.component = component;
         this.type = type;
     }
 
@@ -74,7 +81,7 @@ public class SerialVersionGenerator implements CodeGenerator {
         return NbBundle.getMessage(BundleHelper.class, msg);
     }
 
-    public void invoke(JTextComponent component) {
+    public void invoke() {
         JavaSource js = JavaSource.forDocument(component.getDocument());
         if (js != null) {
             try {

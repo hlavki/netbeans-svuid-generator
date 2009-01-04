@@ -235,4 +235,3 @@ public class SerialVersionUID {
         return result;
     }
 }
-
