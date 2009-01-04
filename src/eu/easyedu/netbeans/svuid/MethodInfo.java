@@ -32,5 +32,4 @@ public class MethodInfo extends ElementInfo {
     public String getSortingName() {
         return name + descriptor;
     }
-
 }

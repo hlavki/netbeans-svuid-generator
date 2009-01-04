@@ -4,10 +4,7 @@
  */
 package eu.easyedu.netbeans.svuid;
 
-import java.util.Set;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 
 /**
