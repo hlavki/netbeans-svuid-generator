@@ -3,4 +3,4 @@ AutoUpdate-Show-In-Client: true
 OpenIDE-Module: eu.easyedu.netbeans.svuid
 OpenIDE-Module-Layer: eu/easyedu/netbeans/svuid/resources/layer.xml
 OpenIDE-Module-Localizing-Bundle: eu/easyedu/netbeans/svuid/resources/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.9.2.2
+OpenIDE-Module-Specification-Version: 1.9.3

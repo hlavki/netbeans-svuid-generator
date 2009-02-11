@@ -9,6 +9,7 @@ import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.util.TreePath;
 import eu.easyedu.netbeans.svuid.resources.BundleHelper;
+import eu.easyedu.netbeans.svuid.service.SerialVersionUIDService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -96,7 +97,9 @@ public class SerialVersionGenerator implements CodeGenerator {
                         long svuid = 1L;
                         if (type.equals(SerialVersionUIDType.GENERATED)) {
                             TypeElement typeElement = (TypeElement) copy.getTrees().getElement(path);
-                            svuid = new SerialVersionUID().generate(typeElement);
+                            SerialVersionUIDService svuidService =
+                                    Lookup.getDefault().lookup(SerialVersionUIDService.class);
+                            svuid = svuidService.generate(typeElement);
                         }
                         int idx = GeneratorUtils.findClassMemberIndex(copy, (ClassTree) path.getLeaf(), caretOffset);
                         VariableTree varTree = SerialVersionUIDHelper.createSerialVersionUID(copy, svuid);
