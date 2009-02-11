@@ -2,8 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package eu.easyedu.netbeans.svuid;
+package eu.easyedu.netbeans.svuid.service.impl;
 
+import eu.easyedu.netbeans.svuid.ClassInfo;
+import eu.easyedu.netbeans.svuid.Descriptor;
+import eu.easyedu.netbeans.svuid.FieldInfo;
+import eu.easyedu.netbeans.svuid.MethodInfo;
+import eu.easyedu.netbeans.svuid.OpCodes;
+import eu.easyedu.netbeans.svuid.service.SerialVersionUIDService;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -24,15 +30,12 @@ import javax.lang.model.type.TypeMirror;
 import org.openide.util.Exceptions;
 
 /**
- * Look at http://java.sun.com/j2se/1.5.0/docs/guide/serialization/spec/class.html#4100
+ *
  * @author hlavki
  */
-public class SerialVersionUID {
+public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
 
-    private static final Logger log = Logger.getLogger(SerialVersionUID.class.getName());
-
-    public SerialVersionUID() {
-    }
+    private static final Logger log = Logger.getLogger(SerialVersionUIDServiceImpl.class.getName());
 
     public long generate(TypeElement el) {
         long result = 0L;
@@ -64,11 +67,11 @@ public class SerialVersionUID {
             /*
              * 4. For each field of the class sorted by field name (except
              * private static and private transient fields):
-             * 
+             *
              * 1. The name of the field in UTF encoding. 2. The modifiers of the
              * field written as a 32-bit integer. 3. The descriptor of the field
              * in UTF encoding
-             * 
+             *
              * Note that field signatutes are not dot separated. Method and
              * constructor signatures are dot separated. Go figure...
              */
@@ -144,7 +147,7 @@ public class SerialVersionUID {
              * digest, the five 32-bit words H0 H1 H2 H3 H4, is in an array of
              * five int values named sha, the hash value would be computed as
              * follows:
-             * 
+             *
              * long hash = ((sha[0] >>> 24) & 0xFF) | ((sha[0] >>> 16) & 0xFF) <<
              * 8 | ((sha[0] >>> 8) & 0xFF) << 16 | ((sha[0] >>> 0) & 0xFF) <<
              * 24 | ((sha[1] >>> 24) & 0xFF) << 32 | ((sha[1] >>> 16) & 0xFF) <<

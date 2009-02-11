@@ -10,6 +10,7 @@ import com.sun.source.tree.Tree.Kind;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.util.TreePath;
 import eu.easyedu.netbeans.svuid.resources.BundleHelper;
+import eu.easyedu.netbeans.svuid.service.SerialVersionUIDService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +33,7 @@ import org.netbeans.spi.editor.hints.ChangeInfo;
 import org.netbeans.spi.editor.hints.ErrorDescription;
 import org.netbeans.spi.editor.hints.ErrorDescriptionFactory;
 import org.netbeans.spi.editor.hints.Fix;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 public class SerialVersionUidHint extends AbstractHint {
@@ -127,7 +129,8 @@ public class SerialVersionUidHint extends AbstractHint {
                     long svuid = 1L;
                     if (type.equals(SerialVersionUIDType.GENERATED)) {
                         TypeElement typeElement = (TypeElement) copy.getTrees().getElement(path);
-                        svuid = new SerialVersionUID().generate(typeElement);
+                        SerialVersionUIDService svuidService = Lookup.getDefault().lookup(SerialVersionUIDService.class);
+                        svuid = svuidService.generate(typeElement);
                     }
                     ClassTree classTree = (ClassTree) path.getLeaf();
                     VariableTree varTree = SerialVersionUIDHelper.createSerialVersionUID(copy, svuid);

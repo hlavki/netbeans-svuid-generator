@@ -11,7 +11,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>0.5.1.1</specification-version>
+                        <specification-version>0.7.1.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -50,14 +50,6 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.netbeans.modules.parsing.api</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.netbeans.spi.editor.hints</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -83,7 +75,9 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages/>
+            <public-packages>
+                <package>eu.easyedu.netbeans.svuid.service</package>
+            </public-packages>
         </data>
     </configuration>
 </project>
