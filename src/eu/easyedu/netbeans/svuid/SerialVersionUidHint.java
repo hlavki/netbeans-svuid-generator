@@ -86,12 +86,11 @@ public class SerialVersionUidHint extends AbstractHint {
     }
 
     public void cancel() {
-        // Does nothing
+        // Do nothing
     }
 
     public String getId() {
         return NbBundle.getMessage(BundleHelper.class, "serial-version-hint-id"); // NOI18N
-
     }
 
     public String getDisplayName() {
@@ -107,11 +106,13 @@ public class SerialVersionUidHint extends AbstractHint {
         private JavaSource js;
         private TreePath path;
         private SerialVersionUIDType type;
+        private SerialVersionUIDService svuidService;
 
         public FixImpl(JavaSource js, TreePath path, SerialVersionUIDType type) {
             this.js = js;
             this.path = path;
             this.type = type;
+            svuidService = Lookup.getDefault().lookup(SerialVersionUIDService.class);
         }
 
         public String getText() {
@@ -129,7 +130,6 @@ public class SerialVersionUidHint extends AbstractHint {
                     long svuid = 1L;
                     if (type.equals(SerialVersionUIDType.GENERATED)) {
                         TypeElement typeElement = (TypeElement) copy.getTrees().getElement(path);
-                        SerialVersionUIDService svuidService = Lookup.getDefault().lookup(SerialVersionUIDService.class);
                         svuid = svuidService.generate(typeElement);
                     }
                     ClassTree classTree = (ClassTree) path.getLeaf();
