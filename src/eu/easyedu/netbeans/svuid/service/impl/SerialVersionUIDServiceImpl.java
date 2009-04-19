@@ -8,11 +8,11 @@ import eu.easyedu.netbeans.svuid.ClassInfo;
 import eu.easyedu.netbeans.svuid.Descriptor;
 import eu.easyedu.netbeans.svuid.FieldInfo;
 import eu.easyedu.netbeans.svuid.MethodInfo;
-import eu.easyedu.netbeans.svuid.OpCodes;
 import eu.easyedu.netbeans.svuid.service.SerialVersionUIDService;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -22,20 +22,23 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
+import static javax.lang.model.element.ElementKind.*;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import static javax.lang.model.util.ElementFilter.*;
 import javax.lang.model.type.TypeMirror;
 import org.openide.util.Exceptions;
 
 /**
- *
+ * See: http://java.sun.com/javase/6/docs/platform/serialization/spec/class.html
+ * See: ObjectStreamClass
  * @author hlavki
  */
 public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
 
     private static final Logger log = Logger.getLogger(SerialVersionUIDServiceImpl.class.getName());
+
 
     public long generate(TypeElement el) {
         long result = 0L;
@@ -46,7 +49,7 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
             out = new DataOutputStream(bout);
 
             // 1. write class name
-            if (log.isLoggable(Level.SEVERE)) {
+            if (log.isLoggable(Level.FINE)) {
                 log.fine("CLASS: " + el.asType().toString());
             }
             ClassInfo clazzInfo = new ClassInfo(el);
@@ -57,7 +60,7 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
 
             // 3. write ordered interfaces
             List<String> interfaces = getInterfaces(el.getInterfaces());
-            if (log.isLoggable(Level.SEVERE)) {
+            if (log.isLoggable(Level.FINE)) {
                 log.fine("INTERFACES: " + interfaces);
             }
             for (String interfejz : interfaces) {
@@ -77,7 +80,7 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
              */
             List<? extends Element> elements = el.getEnclosedElements();
             List<FieldInfo> fields = getFields(elements);
-            if (log.isLoggable(Level.SEVERE)) {
+            if (log.isLoggable(Level.FINE)) {
                 log.fine("FIELDS: " + fields);
             }
             for (FieldInfo field : fields) {
@@ -93,10 +96,13 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
              * 32-bit integer. 3. The descriptor of the method, ()V, in UTF
              * encoding.
              */
-            if (hasStaticInit(elements)) {
-                log.fine("HAS STATIC INIT");
+            boolean staticInit = hasStaticInit(elements);
+            if (log.isLoggable(Level.FINE)) {
+                log.fine("Class has " + (staticInit ? "" : "not ") + "static init!");
+            }
+            if (!staticInit) {
                 out.writeUTF("<clinit>");
-                out.writeInt(OpCodes.ACC_STATIC);
+                out.writeInt(Modifier.STATIC);
                 out.writeUTF("()V");
             }
 
@@ -107,13 +113,13 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
              * descriptor of the method in UTF encoding.
              */
             List<MethodInfo> constructors = getConstructors(elements);
-            if (log.isLoggable(Level.SEVERE)) {
+            if (log.isLoggable(Level.FINE)) {
                 log.fine("CONSTRUCTORS: " + constructors);
             }
             for (MethodInfo constructor : constructors) {
                 out.writeUTF(constructor.getName());
                 out.writeInt(constructor.getSvuidAccess());
-                out.writeUTF(constructor.getDescriptor());
+                out.writeUTF(constructor.getDescriptor().replace('/', '.'));
             }
 
             /*
@@ -123,13 +129,13 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
              * descriptor of the method in UTF encoding.
              */
             List<MethodInfo> methods = getMethods(elements);
-            if (log.isLoggable(Level.SEVERE)) {
+            if (log.isLoggable(Level.FINE)) {
                 log.fine("METHODS: " + methods);
             }
             for (MethodInfo method : methods) {
                 out.writeUTF(method.getName());
                 out.writeInt(method.getSvuidAccess());
-                out.writeUTF(method.getDescriptor());
+                out.writeUTF(method.getDescriptor().replace('/', '.'));
             }
 
             out.flush();
@@ -173,6 +179,7 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
         return result;
     }
 
+
     private List<String> getInterfaces(List<? extends TypeMirror> interfaces) {
         List<String> result = new ArrayList<String>();
         for (TypeMirror type : interfaces) {
@@ -182,56 +189,54 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
         return result;
     }
 
+
     private List<FieldInfo> getFields(List<? extends Element> elements) {
         List<FieldInfo> result = new ArrayList<FieldInfo>();
-        for (Element elem : elements) {
-            if (elem.getKind().equals(ElementKind.FIELD)) {
-                VariableElement var = (VariableElement) elem;
-                FieldInfo fieldInfo = new FieldInfo(var.getSimpleName(), var.getModifiers(), Descriptor.of(var.asType()));
-                if (fieldInfo.includeInSerialVersionUID()) {
-                    result.add(fieldInfo);
-                }
+        List<VariableElement> fields = fieldsIn(elements);
+        for (VariableElement elem : fields) {
+            FieldInfo fieldInfo = new FieldInfo(elem.getSimpleName(), elem.getModifiers(), Descriptor.of(elem.asType()));
+            if (fieldInfo.includeInSerialVersionUID()) {
+                result.add(fieldInfo);
             }
         }
         Collections.sort(result);
         return result;
     }
+
 
     private boolean hasStaticInit(List<? extends Element> elements) {
         boolean result = false;
         Iterator<? extends Element> it = elements.iterator();
         while (it.hasNext() && !result) {
-            result = it.next().getKind().equals(ElementKind.STATIC_INIT);
+            Element element = it.next();
+            result = STATIC_INIT.equals(element.getKind());
         }
         return result;
     }
 
+
     private List<MethodInfo> getConstructors(List<? extends Element> elements) {
         List<MethodInfo> result = new ArrayList<MethodInfo>();
-        for (Element elem : elements) {
-            if (elem.getKind().equals(ElementKind.CONSTRUCTOR)) {
-                ExecutableElement execElem = (ExecutableElement) elem;
-                MethodInfo info = new MethodInfo(execElem.getSimpleName(), execElem.getModifiers(),
-                        Descriptor.of(execElem.asType()));
-                if (info.includeInSerialVersionUID()) {
-                    result.add(info);
-                }
+        List<ExecutableElement> constructors = constructorsIn(elements);
+        for (ExecutableElement elem : constructors) {
+            MethodInfo info = new MethodInfo(elem.getSimpleName(), elem.getModifiers(),
+                    Descriptor.of(elem.asType()));
+            if (info.includeInSerialVersionUID()) {
+                result.add(info);
             }
         }
         Collections.sort(result);
         return result;
     }
 
+
     private List<MethodInfo> getMethods(List<? extends Element> elements) {
         List<MethodInfo> result = new ArrayList<MethodInfo>();
-        for (Element elem : elements) {
-            if (elem.getKind().equals(ElementKind.METHOD)) {
-                ExecutableElement execElem = (ExecutableElement) elem;
-                MethodInfo info = new MethodInfo(execElem.getSimpleName(), execElem.getModifiers(),
-                        Descriptor.of(execElem.asType()));
-                if (info.includeInSerialVersionUID()) {
-                    result.add(info);
-                }
+        List<ExecutableElement> methods = methodsIn(elements);
+        for (ExecutableElement elem : methods) {
+            MethodInfo info = new MethodInfo(elem.getSimpleName(), elem.getModifiers(), Descriptor.of(elem.asType()));
+            if (info.includeInSerialVersionUID()) {
+                result.add(info);
             }
         }
         Collections.sort(result);

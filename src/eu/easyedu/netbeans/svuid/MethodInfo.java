@@ -4,8 +4,8 @@
  */
 package eu.easyedu.netbeans.svuid;
 
+import java.lang.reflect.Modifier;
 import java.util.Set;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 
 /**
@@ -14,19 +14,22 @@ import javax.lang.model.element.Name;
  */
 public class MethodInfo extends ElementInfo {
 
-    public MethodInfo(Name name, Set<Modifier> modifiers, String descriptor) {
+    public MethodInfo(Name name, Set<javax.lang.model.element.Modifier> modifiers, String descriptor) {
         super(name, modifiers, descriptor);
     }
 
+
     @Override
     public boolean includeInSerialVersionUID() {
-        return (access & OpCodes.ACC_PRIVATE) == 0;
+        return (access & Modifier.PRIVATE) == 0;
     }
+
 
     @Override
     public int getSvuidAccess() {
         return access;
     }
+
 
     @Override
     public String getSortingName() {

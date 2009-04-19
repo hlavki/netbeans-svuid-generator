@@ -5,6 +5,7 @@
 package eu.easyedu.netbeans.svuid;
 
 import java.util.List;
+import java.util.logging.Logger;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
@@ -19,6 +20,7 @@ import javax.lang.model.type.TypeVariable;
  */
 public class Descriptor {
 
+    private static final Logger log = Logger.getLogger(Descriptor.class.getName());
     /**
      * Converts a class name into the internal representation used in
      * the JVM.
@@ -62,14 +64,14 @@ public class Descriptor {
                 TypeElement typeElement = (TypeElement) declaredType.asElement();
                 sb.append('L');
                 toJvmName(sb, typeElement.getQualifiedName());
-                List<? extends TypeMirror> typeArgs = declaredType.getTypeArguments();
-                if (!typeArgs.isEmpty()) {
-                    sb.append('<');
-                    for (TypeMirror typeArg : typeArgs) {
-                        descriptor(sb, typeArg);
-                    }
-                    sb.append('>');
-                }
+//                List<? extends TypeMirror> typeArgs = declaredType.getTypeArguments();
+//                if (!typeArgs.isEmpty()) {
+//                    sb.append('<');
+//                    for (TypeMirror typeArg : typeArgs) {
+//                        descriptor(sb, typeArg);
+//                    }
+//                    sb.append('>');
+//                }
                 sb.append(';');
                 break;
             case TYPEVAR:
@@ -114,7 +116,7 @@ public class Descriptor {
                 descriptor(sb, execType.getReturnType());
                 break;
             default:
-                System.out.println("UNKNOWN: " + type.getKind());
+                log.severe("UNKNOWN TYPE: " + type.getKind());
         }
     }
 }

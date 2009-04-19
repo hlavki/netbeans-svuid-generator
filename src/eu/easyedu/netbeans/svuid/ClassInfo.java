@@ -4,6 +4,7 @@
  */
 package eu.easyedu.netbeans.svuid;
 
+import java.lang.reflect.Modifier;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
@@ -13,26 +14,32 @@ import javax.lang.model.element.TypeElement;
  */
 public class ClassInfo extends ElementInfo {
 
+    private boolean interfejz;
+    private int declaredMethodsCount;
+
     public ClassInfo(TypeElement el) {
         super(el.getQualifiedName(), null);
         this.access = getAccessFlag(el.getModifiers()) | getInitialAccessFlag(el);
+        this.interfejz =  ElementKind.INTERFACE.equals(el.getKind());
     }
+
 
     private final int getInitialAccessFlag(TypeElement el) {
         int accessFlag = 0;
         if (el.getKind().equals(ElementKind.INTERFACE)) {
-            accessFlag = OpCodes.ACC_INTERFACE | OpCodes.ACC_ABSTRACT;
-        } else {
-            accessFlag = OpCodes.ACC_SUPER;
+            accessFlag = Modifier.INTERFACE | Modifier.ABSTRACT;
         }
         return accessFlag;
     }
 
+
     @Override
     public int getSvuidAccess() {
-        return access & (OpCodes.ACC_PUBLIC | OpCodes.ACC_FINAL | OpCodes.ACC_INTERFACE | OpCodes.ACC_ABSTRACT);
+        int modifier = access & (Modifier.PUBLIC | Modifier.FINAL | Modifier.INTERFACE | Modifier.ABSTRACT);
+        return modifier;
     }
-    
+
+
     @Override
     public String getSortingName() {
         return name + descriptor;
