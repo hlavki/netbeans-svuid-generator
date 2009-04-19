@@ -100,7 +100,7 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
             if (log.isLoggable(Level.FINE)) {
                 log.fine("Class has " + (staticInit ? "" : "not ") + "static init!");
             }
-            if (!staticInit) {
+            if (staticInit) {
                 out.writeUTF("<clinit>");
                 out.writeInt(Modifier.STATIC);
                 out.writeUTF("()V");
