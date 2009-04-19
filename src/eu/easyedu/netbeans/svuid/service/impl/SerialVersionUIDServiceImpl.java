@@ -183,7 +183,7 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
     private List<String> getInterfaces(List<? extends TypeMirror> interfaces) {
         List<String> result = new ArrayList<String>();
         for (TypeMirror type : interfaces) {
-            result.add(type.toString());
+            result.add(stripGenerics(type.toString()));
         }
         Collections.sort(result);
         return result;
@@ -241,5 +241,11 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
         }
         Collections.sort(result);
         return result;
+    }
+
+    private String stripGenerics(String interfejzName) {
+        int end = interfejzName.indexOf('<');
+        end = end == -1 ? interfejzName.length() : end;
+        return interfejzName.substring(0,  end);
     }
 }
