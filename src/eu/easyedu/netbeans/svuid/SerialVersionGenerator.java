@@ -61,7 +61,7 @@ public class SerialVersionGenerator implements CodeGenerator {
             if (typeElement == null || !typeElement.getKind().isClass() || NestingKind.ANONYMOUS.equals(typeElement.getNestingKind())) {
                 return Collections.emptyList();
             }
-            if (!SerialVersionUIDHelper.needsSerialVersionUID(typeElement)) {
+            if (!SvuidHelper.needsSerialVersionUID(typeElement)) {
                 return Collections.emptyList();
             }
             List<CodeGenerator> result = new ArrayList<CodeGenerator>();
@@ -102,7 +102,7 @@ public class SerialVersionGenerator implements CodeGenerator {
                             svuid = svuidService.generate(typeElement);
                         }
                         int idx = GeneratorUtils.findClassMemberIndex(copy, (ClassTree) path.getLeaf(), caretOffset);
-                        VariableTree varTree = SerialVersionUIDHelper.createSerialVersionUID(copy, svuid);
+                        VariableTree varTree = SvuidHelper.createSerialVersionUID(copy, svuid);
                         List<Tree> members = new ArrayList<Tree>(clazz.getMembers());
                         members.add(idx, varTree);
                         TreeMaker make = copy.getTreeMaker();
