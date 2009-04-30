@@ -66,8 +66,8 @@ public class SerialVersionUidHint extends AbstractHint {
                     return Collections.emptyList();
                 }
                 List<Fix> fixes = new ArrayList<Fix>();
-                fixes.add(new FixImpl(info.getJavaSource(), treePath, SerialVersionUIDType.DEFAULT));
-                fixes.add(new FixImpl(info.getJavaSource(), treePath, SerialVersionUIDType.GENERATED));
+                fixes.add(new FixImpl(info.getJavaSource(), treePath, SvuidType.DEFAULT));
+                fixes.add(new FixImpl(info.getJavaSource(), treePath, SvuidType.GENERATED));
                 fixes.add(FixFactory.createSuppressWarnings(info, treePath, SvuidHelper.SUPPRESS_WARNING_SERIAL));
 
                 int[] span = info.getTreeUtilities().findNameSpan((ClassTree) treePath.getLeaf());
@@ -106,10 +106,10 @@ public class SerialVersionUidHint extends AbstractHint {
 
         private JavaSource js;
         private TreePath path;
-        private SerialVersionUIDType type;
+        private SvuidType type;
         private SerialVersionUIDService svuidService;
 
-        public FixImpl(JavaSource js, TreePath path, SerialVersionUIDType type) {
+        public FixImpl(JavaSource js, TreePath path, SvuidType type) {
             this.js = js;
             this.path = path;
             this.type = type;
@@ -117,7 +117,7 @@ public class SerialVersionUidHint extends AbstractHint {
         }
 
         public String getText() {
-            String msg = type.equals(SerialVersionUIDType.DEFAULT)
+            String msg = type.equals(SvuidType.DEFAULT)
                     ? Constants.SVUID_DEFAULT_LABEL : Constants.SVUID_GENERATED_LABEL;
             return NbBundle.getMessage(BundleHelper.class, msg);
         }
@@ -129,7 +129,7 @@ public class SerialVersionUidHint extends AbstractHint {
                     copy.toPhase(JavaSource.Phase.ELEMENTS_RESOLVED);
                     path = Utilities.getPathElementOfKind(Tree.Kind.CLASS, path);
                     long svuid = 1L;
-                    if (type.equals(SerialVersionUIDType.GENERATED)) {
+                    if (type.equals(SvuidType.GENERATED)) {
                         TypeElement typeElement = (TypeElement) copy.getTrees().getElement(path);
                         svuid = svuidService.generate(typeElement);
                     }
