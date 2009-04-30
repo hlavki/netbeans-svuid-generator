@@ -80,7 +80,7 @@ public class SerialVersionUIDHelper {
     }
 
     public static boolean needsSerialVersionUID(TypeElement typeElement) {
-        return !containsSerialVersionField(typeElement) && isSerializable(typeElement) &&
+        return isSerializable(typeElement) && !containsSerialVersionField(typeElement) &&
                 !containsSuppressWarning(typeElement, SuppressWarning.SERIAL) &&
                 !typeElement.getModifiers().contains(Modifier.ABSTRACT);
     }
@@ -93,7 +93,7 @@ public class SerialVersionUIDHelper {
             TypeElement type = it.next();
             StringBuffer qualifiedName = new StringBuffer(type.getQualifiedName());
             result = (type.getKind().equals(ElementKind.INTERFACE) &&
-                    Constants.SERIALIZABLE_INTERFACE.equals(qualifiedName.toString()));
+                    java.io.Serializable.class.getName().equals(qualifiedName.toString()));
         }
         if (log.isLoggable(Level.FINE)) {
             log.fine("Class " + typeElement.asType().toString() + (result ? " is" : " is not") + " serializable");
