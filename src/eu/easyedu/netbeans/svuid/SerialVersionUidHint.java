@@ -28,6 +28,7 @@ import org.netbeans.api.java.source.Task;
 import org.netbeans.api.java.source.WorkingCopy;
 import org.netbeans.modules.editor.java.Utilities;
 import org.netbeans.modules.java.hints.spi.AbstractHint;
+import org.netbeans.modules.java.hints.spi.support.FixFactory;
 import org.netbeans.spi.editor.hints.ChangeInfo;
 import org.netbeans.spi.editor.hints.ErrorDescription;
 import org.netbeans.spi.editor.hints.ErrorDescriptionFactory;
@@ -67,6 +68,7 @@ public class SerialVersionUidHint extends AbstractHint {
                 List<Fix> fixes = new ArrayList<Fix>();
                 fixes.add(new FixImpl(info.getJavaSource(), treePath, SerialVersionUIDType.DEFAULT));
                 fixes.add(new FixImpl(info.getJavaSource(), treePath, SerialVersionUIDType.GENERATED));
+                fixes.add(FixFactory.createSuppressWarnings(info, treePath, SuppressWarning.SERIAL.getCode()));
 
                 int[] span = info.getTreeUtilities().findNameSpan((ClassTree) treePath.getLeaf());
                 return Collections.<ErrorDescription>singletonList(
