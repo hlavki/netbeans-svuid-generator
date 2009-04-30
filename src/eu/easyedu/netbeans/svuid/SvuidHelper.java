@@ -33,12 +33,13 @@ import org.netbeans.modules.java.editor.codegen.GeneratorUtils;
  *
  * @author hlavki
  */
-public class SerialVersionUIDHelper {
+public class SvuidHelper {
 
-    private static final Logger log = Logger.getLogger(SerialVersionUIDHelper.class.getName());
+    private static final Logger log = Logger.getLogger(SvuidHelper.class.getName());
     private static final String ERROR = "<error>"; //NOI18N
+    public static String SUPPRESS_WARNING_SERIAL = "serial";
 
-    private SerialVersionUIDHelper() {
+    private SvuidHelper() {
     }
 
     public static void scanForStaticFields(CompilationInfo info, final TreePath clsPath,
@@ -81,7 +82,7 @@ public class SerialVersionUIDHelper {
 
     public static boolean needsSerialVersionUID(TypeElement typeElement) {
         return isSerializable(typeElement) && !containsSerialVersionField(typeElement) &&
-                !containsSuppressWarning(typeElement, SuppressWarning.SERIAL) &&
+                !containsSuppressWarning(typeElement, SvuidHelper.SUPPRESS_WARNING_SERIAL) &&
                 !typeElement.getModifiers().contains(Modifier.ABSTRACT);
     }
 
@@ -124,7 +125,7 @@ public class SerialVersionUIDHelper {
      * @param typeElement
      * @return
      */
-    private static boolean containsSuppressWarning(TypeElement typeElement, SuppressWarning suppressWarning) {
+    private static boolean containsSuppressWarning(TypeElement typeElement, String suppressWarning) {
         boolean result = false;
         SuppressWarnings suppressAnnotation = typeElement.getAnnotation(SuppressWarnings.class);
         try {
@@ -132,7 +133,7 @@ public class SerialVersionUIDHelper {
                 String[] values = suppressAnnotation.value();
                 int idx = 0;
                 while (idx < values.length && result == false) {
-                    result = suppressWarning.getCode().equals(values[idx++]);
+                    result = suppressWarning.equals(values[idx++]);
                 }
             }
         } catch (IncompleteAnnotationException e) {

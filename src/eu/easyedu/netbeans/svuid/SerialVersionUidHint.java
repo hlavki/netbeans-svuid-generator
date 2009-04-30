@@ -62,13 +62,13 @@ public class SerialVersionUidHint extends AbstractHint {
 //                typeElement = (TypeElement) info.getTrees().getElement(treePath);
 //            }
             if (typeElement.getKind().equals(ElementKind.CLASS)) {
-                if (!SerialVersionUIDHelper.needsSerialVersionUID(typeElement)) {
+                if (!SvuidHelper.needsSerialVersionUID(typeElement)) {
                     return Collections.emptyList();
                 }
                 List<Fix> fixes = new ArrayList<Fix>();
                 fixes.add(new FixImpl(info.getJavaSource(), treePath, SerialVersionUIDType.DEFAULT));
                 fixes.add(new FixImpl(info.getJavaSource(), treePath, SerialVersionUIDType.GENERATED));
-                fixes.add(FixFactory.createSuppressWarnings(info, treePath, SuppressWarning.SERIAL.getCode()));
+                fixes.add(FixFactory.createSuppressWarnings(info, treePath, SvuidHelper.SUPPRESS_WARNING_SERIAL));
 
                 int[] span = info.getTreeUtilities().findNameSpan((ClassTree) treePath.getLeaf());
                 return Collections.<ErrorDescription>singletonList(
@@ -134,7 +134,7 @@ public class SerialVersionUidHint extends AbstractHint {
                         svuid = svuidService.generate(typeElement);
                     }
                     ClassTree classTree = (ClassTree) path.getLeaf();
-                    VariableTree varTree = SerialVersionUIDHelper.createSerialVersionUID(copy, svuid);
+                    VariableTree varTree = SvuidHelper.createSerialVersionUID(copy, svuid);
                     ClassTree decl = GeneratorUtilities.get(copy).insertClassMember(classTree, varTree);
                     copy.rewrite(classTree, decl);
                 }
