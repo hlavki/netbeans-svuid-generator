@@ -243,9 +243,10 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
         return result;
     }
 
+
     private String stripGenerics(String interfejzName) {
         int end = interfejzName.indexOf('<');
         end = end == -1 ? interfejzName.length() : end;
-        return interfejzName.substring(0,  end);
+        return interfejzName.substring(0, end);
     }
 }
