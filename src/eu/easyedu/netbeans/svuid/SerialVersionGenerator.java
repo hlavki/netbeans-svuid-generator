@@ -36,7 +36,7 @@ import org.openide.util.NbBundle;
  */
 public class SerialVersionGenerator implements CodeGenerator {
 
-    private SerialVersionUIDType type;
+    private SvuidType type;
     private JTextComponent component;
 
     public static class Factory implements CodeGenerator.Factory {
@@ -65,19 +65,19 @@ public class SerialVersionGenerator implements CodeGenerator {
                 return Collections.emptyList();
             }
             List<CodeGenerator> result = new ArrayList<CodeGenerator>();
-            result.add(new SerialVersionGenerator(component, SerialVersionUIDType.DEFAULT));
-            result.add(new SerialVersionGenerator(component, SerialVersionUIDType.GENERATED));
+            result.add(new SerialVersionGenerator(component, SvuidType.DEFAULT));
+            result.add(new SerialVersionGenerator(component, SvuidType.GENERATED));
             return result;
         }
     }
 
-    public SerialVersionGenerator(JTextComponent component, SerialVersionUIDType type) {
+    public SerialVersionGenerator(JTextComponent component, SvuidType type) {
         this.component = component;
         this.type = type;
     }
 
     public String getDisplayName() {
-        String msg = type.equals(SerialVersionUIDType.DEFAULT)
+        String msg = type.equals(SvuidType.DEFAULT)
                 ? Constants.SVUID_DEFAULT_LABEL : Constants.SVUID_GENERATED_LABEL;
         return NbBundle.getMessage(BundleHelper.class, msg);
     }
@@ -95,7 +95,7 @@ public class SerialVersionGenerator implements CodeGenerator {
                         path = Utilities.getPathElementOfKind(Tree.Kind.CLASS, path);
                         ClassTree clazz = (ClassTree) path.getLeaf();
                         long svuid = 1L;
-                        if (type.equals(SerialVersionUIDType.GENERATED)) {
+                        if (type.equals(SvuidType.GENERATED)) {
                             TypeElement typeElement = (TypeElement) copy.getTrees().getElement(path);
                             SerialVersionUIDService svuidService =
                                     Lookup.getDefault().lookup(SerialVersionUIDService.class);

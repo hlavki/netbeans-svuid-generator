@@ -9,6 +9,6 @@ package eu.easyedu.netbeans.svuid;
  *
  * @author hlavki
  */
-public enum SerialVersionUIDType {
+public enum SvuidType {
     DEFAULT, GENERATED
 }
