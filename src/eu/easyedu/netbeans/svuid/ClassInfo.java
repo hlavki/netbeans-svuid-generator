@@ -15,7 +15,6 @@ import javax.lang.model.element.TypeElement;
 public class ClassInfo extends ElementInfo {
 
     private boolean interfejz;
-    private int declaredMethodsCount;
 
     public ClassInfo(TypeElement el) {
         super(el.getQualifiedName(), null);

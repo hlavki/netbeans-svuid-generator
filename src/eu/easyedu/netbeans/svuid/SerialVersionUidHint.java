@@ -25,6 +25,7 @@ import org.netbeans.api.java.source.CompilationInfo;
 import org.netbeans.api.java.source.GeneratorUtilities;
 import org.netbeans.api.java.source.JavaSource;
 import org.netbeans.api.java.source.Task;
+import org.netbeans.api.java.source.TreePathHandle;
 import org.netbeans.api.java.source.WorkingCopy;
 import org.netbeans.modules.editor.java.Utilities;
 import org.netbeans.modules.java.hints.spi.AbstractHint;
@@ -33,6 +34,7 @@ import org.netbeans.spi.editor.hints.ChangeInfo;
 import org.netbeans.spi.editor.hints.ErrorDescription;
 import org.netbeans.spi.editor.hints.ErrorDescriptionFactory;
 import org.netbeans.spi.editor.hints.Fix;
+import org.openide.filesystems.FileObject;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -42,13 +44,16 @@ public class SerialVersionUidHint extends AbstractHint {
     private static final Set<Tree.Kind> TREE_KINDS = EnumSet.<Tree.Kind>of(Tree.Kind.CLASS);
     protected final WorkingCopy copy = null;
 
+
     public SerialVersionUidHint() {
         super(true, true, AbstractHint.HintSeverity.WARNING);
     }
 
+
     public Set<Kind> getTreeKinds() {
         return TREE_KINDS;
     }
+
 
     public List<ErrorDescription> run(CompilationInfo info, TreePath treePath) {
         try {
@@ -57,18 +62,15 @@ public class SerialVersionUidHint extends AbstractHint {
             if (log.isLoggable(Level.FINE)) {
                 log.fine("Type of " + typeElement.asType().toString() + " is " + typeElement.getNestingKind());
             }
-//            if (typeElement.getNestingKind().equals(NestingKind.ANONYMOUS)) {
-//                treePath = Utilities.getPathElementOfKind(Tree.Kind.CLASS, treePath.getParentPath());
-//                typeElement = (TypeElement) info.getTrees().getElement(treePath);
-//            }
             if (typeElement.getKind().equals(ElementKind.CLASS)) {
                 if (!SvuidHelper.needsSerialVersionUID(typeElement)) {
                     return Collections.emptyList();
                 }
                 List<Fix> fixes = new ArrayList<Fix>();
-                fixes.add(new FixImpl(info.getJavaSource(), treePath, SvuidType.DEFAULT));
-                fixes.add(new FixImpl(info.getJavaSource(), treePath, SvuidType.GENERATED));
-                fixes.add(FixFactory.createSuppressWarnings(info, treePath, SvuidHelper.SUPPRESS_WARNING_SERIAL));
+                TreePathHandle handle = TreePathHandle.create(treePath, info);
+                fixes.add(new FixImpl(info.getFileObject(), handle, SvuidType.DEFAULT));
+                fixes.add(new FixImpl(info.getFileObject(), handle, SvuidType.GENERATED));
+                fixes.addAll(FixFactory.createSuppressWarnings(info, treePath, SvuidHelper.SUPPRESS_WARNING_SERIAL));
 
                 int[] span = info.getTreeUtilities().findNameSpan((ClassTree) treePath.getLeaf());
                 return Collections.<ErrorDescription>singletonList(
@@ -86,17 +88,21 @@ public class SerialVersionUidHint extends AbstractHint {
         return null;
     }
 
+
     public void cancel() {
         // Do nothing
     }
+
 
     public String getId() {
         return NbBundle.getMessage(BundleHelper.class, "serial-version-hint-id"); // NOI18N
     }
 
+
     public String getDisplayName() {
         return NbBundle.getMessage(BundleHelper.class, "serial-version-hint-display-name");
     }
+
 
     public String getDescription() {
         return NbBundle.getMessage(BundleHelper.class, "serial-version-hint-description");
@@ -104,17 +110,19 @@ public class SerialVersionUidHint extends AbstractHint {
 
     private static final class FixImpl implements Fix {
 
-        private JavaSource js;
-        private TreePath path;
+        private FileObject file;
+        private TreePathHandle handle;
         private SvuidType type;
         private SerialVersionUIDService svuidService;
 
-        public FixImpl(JavaSource js, TreePath path, SvuidType type) {
-            this.js = js;
-            this.path = path;
+
+        public FixImpl(FileObject file, TreePathHandle handle, SvuidType type) {
+            this.file = file;
+            this.handle = handle;
             this.type = type;
             svuidService = Lookup.getDefault().lookup(SerialVersionUIDService.class);
         }
+
 
         public String getText() {
             String msg = type.equals(SvuidType.DEFAULT)
@@ -122,11 +130,14 @@ public class SerialVersionUidHint extends AbstractHint {
             return NbBundle.getMessage(BundleHelper.class, msg);
         }
 
+
         public ChangeInfo implement() throws IOException {
+            JavaSource js = JavaSource.forFileObject(file);
             js.runModificationTask(new Task<WorkingCopy>() {
 
                 public void run(WorkingCopy copy) throws Exception {
                     copy.toPhase(JavaSource.Phase.ELEMENTS_RESOLVED);
+                    TreePath path = handle.resolve(copy);
                     path = Utilities.getPathElementOfKind(Tree.Kind.CLASS, path);
                     long svuid = 1L;
                     if (type.equals(SvuidType.GENERATED)) {
@@ -142,6 +153,7 @@ public class SerialVersionUidHint extends AbstractHint {
             return null;
         }
     }
+
 
     @Override
     public String toString() {
