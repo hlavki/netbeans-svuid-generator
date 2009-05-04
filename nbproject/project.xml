@@ -75,6 +75,11 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
+            <test-dependencies>
+                <test-type>
+                    <name>unit</name>
+                </test-type>
+            </test-dependencies>
             <public-packages>
                 <package>eu.easyedu.netbeans.svuid.service</package>
             </public-packages>
