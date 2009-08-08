@@ -8,7 +8,6 @@ import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.util.TreePath;
-import eu.easyedu.netbeans.svuid.resources.BundleHelper;
 import eu.easyedu.netbeans.svuid.service.SerialVersionUIDService;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,7 +78,7 @@ public class SerialVersionGenerator implements CodeGenerator {
     public String getDisplayName() {
         String msg = type.equals(SvuidType.DEFAULT)
                 ? Constants.SVUID_DEFAULT_LABEL : Constants.SVUID_GENERATED_LABEL;
-        return NbBundle.getMessage(BundleHelper.class, msg);
+        return NbBundle.getMessage(getClass(), msg);
     }
 
     public void invoke() {
