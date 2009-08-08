@@ -81,8 +81,24 @@ public class SerialVersionUidHint extends AbstractHint {
         ErrorDescription ed = null;
         Severity severity = getSeverity().toEditorSeverity();
         FileObject fo = info.getFileObject();
-        int[] span = info.getTreeUtilities().findNameSpan((ClassTree) treePath.getLeaf());
-        ed = ErrorDescriptionFactory.createErrorDescription(severity, desc, fixes, fo, span[0], span[1]);
+        if (type.getNestingKind().equals(NestingKind.ANONYMOUS)) {
+            SourcePositions pos = info.getTrees().getSourcePositions();
+            Iterator<Tree> trees = treePath.iterator();
+            Tree clazzTree = null;
+            while (trees.hasNext() && clazzTree == null) {
+                Tree tree = trees.next();
+                if (tree.getKind().equals(Tree.Kind.NEW_CLASS)) {
+                    clazzTree = ((NewClassTree) tree).getIdentifier();
+                }
+            }
+            if (clazzTree == null) clazzTree = treePath.getParentPath().getLeaf(); // mark all implementation!
+            long start = pos.getStartPosition(info.getCompilationUnit(), clazzTree);
+            long end = pos.getEndPosition(info.getCompilationUnit(), clazzTree);
+            ed = ErrorDescriptionFactory.createErrorDescription(severity, desc, fixes, fo, (int) start, (int) end);
+        } else {
+            int[] span = info.getTreeUtilities().findNameSpan((ClassTree) treePath.getLeaf());
+            ed = ErrorDescriptionFactory.createErrorDescription(severity, desc, fixes, fo, span[0], span[1]);
+        }
         if (cancel.get()) {
             return null;
         }
