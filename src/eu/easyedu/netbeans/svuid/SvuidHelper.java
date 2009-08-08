@@ -82,8 +82,7 @@ public class SvuidHelper {
 
     public static boolean needsSerialVersionUID(TypeElement typeElement) {
         return isSerializable(typeElement) && !containsSerialVersionField(typeElement) &&
-                !containsSuppressWarning(typeElement, SvuidHelper.SUPPRESS_WARNING_SERIAL) &&
-                !typeElement.getModifiers().contains(Modifier.ABSTRACT);
+                !containsSuppressWarning(typeElement, SvuidHelper.SUPPRESS_WARNING_SERIAL);
     }
 
     private static boolean isSerializable(TypeElement typeElement) {
