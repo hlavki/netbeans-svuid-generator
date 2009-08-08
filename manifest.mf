@@ -1,6 +1,5 @@
 Manifest-Version: 1.0
 AutoUpdate-Show-In-Client: true
 OpenIDE-Module: eu.easyedu.netbeans.svuid
-OpenIDE-Module-Layer: eu/easyedu/netbeans/svuid/resources/layer.xml
-OpenIDE-Module-Localizing-Bundle: eu/easyedu/netbeans/svuid/resources/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.9.4
+OpenIDE-Module-Layer: eu/easyedu/netbeans/svuid/layer.xml
+OpenIDE-Module-Localizing-Bundle: eu/easyedu/netbeans/svuid/Bundle.properties
