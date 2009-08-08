@@ -14,12 +14,10 @@ import javax.lang.model.element.TypeElement;
  */
 public class ClassInfo extends ElementInfo {
 
-    private boolean interfejz;
 
     public ClassInfo(TypeElement el) {
         super(el.getQualifiedName(), null);
         this.access = getAccessFlag(el.getModifiers()) | getInitialAccessFlag(el);
-        this.interfejz =  ElementKind.INTERFACE.equals(el.getKind());
     }
 
 
