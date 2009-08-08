@@ -17,7 +17,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -192,8 +191,7 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
 
     private List<FieldInfo> getFields(List<? extends Element> elements) {
         List<FieldInfo> result = new ArrayList<FieldInfo>();
-        List<VariableElement> fields = fieldsIn(elements);
-        for (VariableElement elem : fields) {
+        for (VariableElement elem : fieldsIn(elements)) {
             FieldInfo fieldInfo = new FieldInfo(elem.getSimpleName(), elem.getModifiers(), Descriptor.of(elem.asType()));
             if (fieldInfo.includeInSerialVersionUID()) {
                 result.add(fieldInfo);
@@ -205,22 +203,17 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
 
 
     private boolean hasStaticInit(List<? extends Element> elements) {
-        boolean result = false;
-        Iterator<? extends Element> it = elements.iterator();
-        while (it.hasNext() && !result) {
-            Element element = it.next();
-            result = STATIC_INIT.equals(element.getKind());
+        for (Element e : elements) {
+            return STATIC_INIT.equals(e.getKind());
         }
-        return result;
+        return false;
     }
 
 
     private List<MethodInfo> getConstructors(List<? extends Element> elements) {
         List<MethodInfo> result = new ArrayList<MethodInfo>();
-        List<ExecutableElement> constructors = constructorsIn(elements);
-        for (ExecutableElement elem : constructors) {
-            MethodInfo info = new MethodInfo(elem.getSimpleName(), elem.getModifiers(),
-                    Descriptor.of(elem.asType()));
+        for (ExecutableElement elem : constructorsIn(elements)) {
+            MethodInfo info = new MethodInfo(elem.getSimpleName(), elem.getModifiers(), Descriptor.of(elem.asType()));
             if (info.includeInSerialVersionUID()) {
                 result.add(info);
             }
@@ -232,8 +225,7 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
 
     private List<MethodInfo> getMethods(List<? extends Element> elements) {
         List<MethodInfo> result = new ArrayList<MethodInfo>();
-        List<ExecutableElement> methods = methodsIn(elements);
-        for (ExecutableElement elem : methods) {
+        for (ExecutableElement elem : methodsIn(elements)) {
             MethodInfo info = new MethodInfo(elem.getSimpleName(), elem.getModifiers(), Descriptor.of(elem.asType()));
             if (info.includeInSerialVersionUID()) {
                 result.add(info);
