@@ -8,8 +8,8 @@ import com.sun.source.tree.VariableTree;
 import com.sun.source.util.TreePath;
 import com.sun.source.util.TreePathScanner;
 import com.sun.source.util.Trees;
-import java.lang.annotation.IncompleteAnnotationException;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +21,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import static javax.lang.model.element.Modifier.*;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
@@ -37,6 +38,7 @@ public class SvuidHelper {
 
     private static final Logger log = Logger.getLogger(SvuidHelper.class.getName());
     private static final String ERROR = "<error>"; //NOI18N
+    private static final String SERIALIZABLE_CLASS = "java.io.Serializable";
     public static String SUPPRESS_WARNING_SERIAL = "serial";
 
     private SvuidHelper() {
@@ -61,42 +63,43 @@ public class SvuidHelper {
         }.scan(clsPath, Boolean.FALSE);
     }
 
-    private static boolean containsSerialVersionField(TypeElement typeElement) {
+    private static boolean containsSerialVersionField(TypeElement type) {
         boolean result = false;
-        List<VariableElement> fields = ElementFilter.fieldsIn(typeElement.getEnclosedElements());
+        List<VariableElement> fields = ElementFilter.fieldsIn(type.getEnclosedElements());
         Iterator<VariableElement> it = fields.iterator();
         while (it.hasNext() && !result) {
-            VariableElement elem = it.next();
-            Set<Modifier> modifiers = elem.getModifiers();
-            TypeMirror typeMirror = elem.asType();
-            StringBuffer sb = new StringBuffer(elem.getSimpleName());
-            result = Constants.SERIAL_VERSION_FIELD.equals(sb.toString()) && modifiers.contains(Modifier.FINAL) &&
-                    modifiers.contains(Modifier.STATIC) && typeMirror.getKind().isPrimitive() &&
-                    typeMirror.getKind().equals(TypeKind.LONG);
+            VariableElement e = it.next();
+            Set<Modifier> modifiers = e.getModifiers();
+            // documentation says ANY-ACCESS-MODIFIER static final long serialVersionUID
+            if (modifiers.containsAll(EnumSet.of(STATIC, FINAL))) {
+                TypeMirror t = e.asType();
+                if (t.getKind() != null && t.getKind() == TypeKind.LONG) {
+                    return true;
+                }
+            }
         }
         if (log.isLoggable(Level.FINE)) {
-            log.fine("Class " + typeElement.asType().toString() + (result ? "" : " does not") + " contain serialVersionUID field");
+            log.fine("Class " + type.asType().toString() + (result ? "" : " does not") + " contain serialVersionUID field");
         }
         return result;
     }
 
-    public static boolean needsSerialVersionUID(TypeElement typeElement) {
-        return isSerializable(typeElement) && !containsSerialVersionField(typeElement) &&
-                !containsSuppressWarning(typeElement, SvuidHelper.SUPPRESS_WARNING_SERIAL);
+    public static boolean needsSerialVersionUID(TypeElement type) {
+        return isSerializable(type) && !containsSerialVersionField(type) &&
+                !hasSuppressWarning(type, SvuidHelper.SUPPRESS_WARNING_SERIAL);
     }
 
-    private static boolean isSerializable(TypeElement typeElement) {
+    private static boolean isSerializable(TypeElement type) {
         boolean result = false;
-        Collection<TypeElement> parents = GeneratorUtils.getAllParents(typeElement);
+        Collection<TypeElement> parents = GeneratorUtils.getAllParents(type);
         Iterator<TypeElement> it = parents.iterator();
         while (it.hasNext() && !result) {
-            TypeElement type = it.next();
-            StringBuffer qualifiedName = new StringBuffer(type.getQualifiedName());
-            result = (type.getKind().equals(ElementKind.INTERFACE) &&
-                    java.io.Serializable.class.getName().equals(qualifiedName.toString()));
+            TypeElement parent = it.next();
+            StringBuffer qualifiedName = new StringBuffer(parent.getQualifiedName());
+            result = (parent.getKind().equals(ElementKind.INTERFACE) && SERIALIZABLE_CLASS.equals(qualifiedName.toString()));
         }
         if (log.isLoggable(Level.FINE)) {
-            log.fine("Class " + typeElement.asType().toString() + (result ? " is" : " is not") + " serializable");
+            log.fine("Class " + type.asType().toString() + (result ? " is" : " is not") + " serializable");
         }
         return result;
     }
@@ -124,23 +127,20 @@ public class SvuidHelper {
      * @param typeElement
      * @return
      */
-    private static boolean containsSuppressWarning(TypeElement typeElement, String suppressWarning) {
+    private static boolean hasSuppressWarning(TypeElement type, String warning) {
         boolean result = false;
-        SuppressWarnings suppressAnnotation = typeElement.getAnnotation(SuppressWarnings.class);
-        try {
-            if (suppressAnnotation != null) {
-                String[] values = suppressAnnotation.value();
-                int idx = 0;
-                while (idx < values.length && result == false) {
-                    result = suppressWarning.equals(values[idx++]);
-                }
+        SuppressWarnings annotation = type.getAnnotation(SuppressWarnings.class);
+        if (annotation != null) {
+            String[] values = annotation.value();
+            int idx = 0;
+            while (idx < values.length && result == false) {
+                result = warning.equals(values[idx++]);
             }
-        } catch (IncompleteAnnotationException e) {
         }
         if (log.isLoggable(Level.FINE)) {
-            log.fine("Class " + typeElement.asType().toString() + (result ? "" : " does not") +
+            log.fine("Class " + type.asType().toString() + (result ? "" : " does not") +
                     " contain SuppressWarnings(serial) annotation");
         }
-        return result;
+        return false;
     }
 }
