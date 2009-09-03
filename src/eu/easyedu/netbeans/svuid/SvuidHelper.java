@@ -10,7 +10,6 @@ import com.sun.source.util.TreePathScanner;
 import com.sun.source.util.Trees;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -26,8 +25,6 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import org.netbeans.api.java.source.CompilationInfo;
-import org.netbeans.api.java.source.TreeMaker;
-import org.netbeans.api.java.source.WorkingCopy;
 import org.netbeans.modules.java.editor.codegen.GeneratorUtils;
 
 /**
@@ -85,7 +82,7 @@ public class SvuidHelper {
     }
 
     public static boolean needsSerialVersionUID(TypeElement type) {
-        return isSerializable(type) && !containsSerialVersionField(type) && !type.getKind().equals(ElementKind.ENUM) &&
+        return isSerializable(type) && !containsSerialVersionField(type) && type.getKind() != ElementKind.ENUM &&
                 !hasSuppressWarning(type, SvuidHelper.SUPPRESS_WARNING_SERIAL);
     }
 
@@ -102,24 +99,6 @@ public class SvuidHelper {
             log.fine("Class " + type.asType().toString() + (result ? " is" : " is not") + " serializable");
         }
         return result;
-    }
-
-    /**
-     * Creates the <code>serialVersionUID</code> field with
-     * value of <code>serialVersion</code>.
-     * 
-     * @return the created field.
-     */
-    public static VariableTree createSerialVersionUID(WorkingCopy copy, Long serialVersion) {
-        Set<Modifier> serialVersionUIDModifiers = new HashSet<Modifier>();
-        serialVersionUIDModifiers.add(Modifier.PRIVATE);
-        serialVersionUIDModifiers.add(Modifier.STATIC);
-        serialVersionUIDModifiers.add(Modifier.FINAL);
-        TreeMaker make = copy.getTreeMaker();
-        VariableTree serialVersionUID = make.Variable(make.Modifiers(serialVersionUIDModifiers),
-                Constants.SERIAL_VERSION_FIELD, make.Identifier("long"), make.Literal(Long.valueOf(serialVersion))); //NO18N
-
-        return serialVersionUID;
     }
 
     /**
@@ -141,6 +120,6 @@ public class SvuidHelper {
             log.fine("Class " + type.asType().toString() + (result ? "" : " does not") +
                     " contain SuppressWarnings(serial) annotation");
         }
-        return false;
+        return result;
     }
 }

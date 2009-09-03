@@ -12,8 +12,11 @@ import eu.easyedu.netbeans.svuid.service.SerialVersionUIDService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
-import javax.lang.model.element.NestingKind;
+import java.util.Set;
+import javax.lang.model.element.Modifier;
+import static javax.lang.model.element.Modifier.*;
 import javax.lang.model.element.TypeElement;
 import javax.swing.text.JTextComponent;
 import org.netbeans.api.java.source.CompilationController;
@@ -35,6 +38,9 @@ import org.openide.util.NbBundle;
  */
 public class SerialVersionGenerator implements CodeGenerator {
 
+    private static final String SVUID_DEFAULT_LABEL = "LBL_SerialVersionGenerator_default";
+    private static final String SVUID_GENERATED_LABEL = "LBL_SerialVersionGenerator_generated";
+    private static final String SVUID_FIELD = "serialVersionUID";
     private SvuidType type;
     private JTextComponent component;
 
@@ -57,7 +63,7 @@ public class SerialVersionGenerator implements CodeGenerator {
                 return Collections.emptyList();
             }
             TypeElement typeElement = (TypeElement) controller.getTrees().getElement(path);
-            if (typeElement == null || !typeElement.getKind().isClass() || NestingKind.ANONYMOUS.equals(typeElement.getNestingKind())) {
+            if (typeElement == null || typeElement.getKind().isInterface()) {
                 return Collections.emptyList();
             }
             if (!SvuidHelper.needsSerialVersionUID(typeElement)) {
@@ -76,8 +82,7 @@ public class SerialVersionGenerator implements CodeGenerator {
     }
 
     public String getDisplayName() {
-        String msg = type.equals(SvuidType.DEFAULT)
-                ? Constants.SVUID_DEFAULT_LABEL : Constants.SVUID_GENERATED_LABEL;
+        String msg = type == SvuidType.DEFAULT ? SVUID_DEFAULT_LABEL : SVUID_GENERATED_LABEL;
         return NbBundle.getMessage(getClass(), msg);
     }
 
@@ -101,16 +106,18 @@ public class SerialVersionGenerator implements CodeGenerator {
                             svuid = svuidService.generate(typeElement);
                         }
                         int idx = GeneratorUtils.findClassMemberIndex(copy, (ClassTree) path.getLeaf(), caretOffset);
-                        VariableTree varTree = SvuidHelper.createSerialVersionUID(copy, svuid);
+
+                        Set<Modifier> modifiers = EnumSet.of(PRIVATE, STATIC, FINAL);
+                        TreeMaker make = copy.getTreeMaker();
+                        VariableTree varTree = make.Variable(make.Modifiers(modifiers),
+                                SVUID_FIELD, make.Identifier("long"), make.Literal(Long.valueOf(svuid))); //NO18N
+
                         List<Tree> members = new ArrayList<Tree>(clazz.getMembers());
                         members.add(idx, varTree);
-                        TreeMaker make = copy.getTreeMaker();
                         ClassTree nue = make.Class(clazz.getModifiers(), clazz.getSimpleName(),
                                 clazz.getTypeParameters(), clazz.getExtendsClause(),
                                 clazz.getImplementsClause(), members);
-//			ClassTree decl = GeneratorUtilities.get(copy).insertClassMember(classTree, varTree);
                         copy.rewrite(clazz, nue);
-
                     }
                 });
                 GeneratorUtils.guardedCommit(component, mr);
