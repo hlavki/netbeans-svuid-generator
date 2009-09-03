@@ -12,9 +12,7 @@ import com.sun.source.tree.VariableTree;
 import com.sun.source.util.SourcePositions;
 import com.sun.source.util.TreePath;
 import eu.easyedu.netbeans.svuid.service.SerialVersionUIDService;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -33,7 +31,6 @@ import org.netbeans.api.java.source.Task;
 import org.netbeans.api.java.source.TreeMaker;
 import org.netbeans.api.java.source.TreePathHandle;
 import org.netbeans.api.java.source.WorkingCopy;
-import org.netbeans.modules.java.editor.semantic.Utilities;
 import org.netbeans.modules.java.hints.spi.AbstractHint;
 import org.netbeans.modules.java.hints.spi.support.FixFactory;
 import org.netbeans.spi.editor.hints.ChangeInfo;
@@ -42,7 +39,6 @@ import org.netbeans.spi.editor.hints.ErrorDescriptionFactory;
 import org.netbeans.spi.editor.hints.Fix;
 import org.netbeans.spi.editor.hints.Severity;
 import org.openide.filesystems.FileObject;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -75,12 +71,12 @@ public class SerialVersionUidHint extends AbstractHint {
         List<Fix> fixes = new ArrayList<Fix>();
         fixes.add(new FixImpl(TreePathHandle.create(treePath, info), SvuidType.DEFAULT, type));
         fixes.add(new FixImpl(TreePathHandle.create(treePath, info), SvuidType.GENERATED, type));
-        fixes.addAll(FixFactory.createSuppressWarnings(info, treePath, SvuidHelper.SUPPRESS_WARNING_SERIAL));
 
         String desc = NbBundle.getMessage(getClass(), "ERR_SerialVersionUID"); //NOI18N
         ErrorDescription ed = null;
         Severity severity = getSeverity().toEditorSeverity();
         FileObject fo = info.getFileObject();
+        int[] span;
         if (type.getNestingKind().equals(NestingKind.ANONYMOUS)) {
             SourcePositions pos = info.getTrees().getSourcePositions();
             Iterator<Tree> trees = treePath.iterator();
@@ -94,11 +90,12 @@ public class SerialVersionUidHint extends AbstractHint {
             if (clazzTree == null) clazzTree = treePath.getParentPath().getLeaf(); // mark all implementation!
             long start = pos.getStartPosition(info.getCompilationUnit(), clazzTree);
             long end = pos.getEndPosition(info.getCompilationUnit(), clazzTree);
-            ed = ErrorDescriptionFactory.createErrorDescription(severity, desc, fixes, fo, (int) start, (int) end);
+            span = new int[]{(int) start, (int) end};
         } else {
-            int[] span = info.getTreeUtilities().findNameSpan((ClassTree) treePath.getLeaf());
-            ed = ErrorDescriptionFactory.createErrorDescription(severity, desc, fixes, fo, span[0], span[1]);
+            fixes.addAll(FixFactory.createSuppressWarnings(info, treePath, SvuidHelper.SUPPRESS_WARNING_SERIAL));
+            span = info.getTreeUtilities().findNameSpan((ClassTree) treePath.getLeaf());
         }
+        ed = ErrorDescriptionFactory.createErrorDescription(severity, desc, fixes, fo, span[0], span[1]);
         if (cancel.get()) {
             return null;
         }
