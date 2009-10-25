@@ -19,10 +19,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.prefs.Preferences;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import static javax.lang.model.element.Modifier.*;
 import javax.lang.model.element.TypeElement;
+import javax.swing.JComponent;
 import org.netbeans.api.java.source.CompilationInfo;
 import org.netbeans.api.java.source.GeneratorUtilities;
 import org.netbeans.api.java.source.JavaSource;
@@ -46,6 +48,10 @@ public class SerialVersionUidHint extends AbstractHint {
 
     private static final Set<Tree.Kind> TREE_KINDS = EnumSet.<Tree.Kind>of(Tree.Kind.CLASS);
     private static final String SVUID = "serialVersionUID";
+    static final String WARN_FOR_INCORRECT_VALUE_KEY = "warn-for-incorrect-value";
+    static final String IGNORED_VALUES_KEY = "wfiv-ingored-values";
+    static final String IGNORED_VALUES_DEFAULT = "0L,1L";
+    static final boolean WARN_FOR_INCORRECT_VALUE_DEFAULT = false;
     protected final WorkingCopy copy = null;
     private AtomicBoolean cancel = new AtomicBoolean();
 
@@ -117,6 +123,11 @@ public class SerialVersionUidHint extends AbstractHint {
     public String getDescription() {
         return NbBundle.getMessage(getClass(), "DSC_SerialVersionUID"); //NOI18N
     }
+
+//    @Override
+//    public JComponent getCustomizer(final Preferences node) {
+//        return new SerialVersionUidHintCustomizer(node);
+//    }
 
     private static final class FixImpl implements Fix, Task<WorkingCopy> {
 
