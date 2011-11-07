@@ -49,6 +49,7 @@ public class SerialVersionGenerator implements CodeGenerator {
         public Factory() {
         }
 
+        @Override
         public List<? extends CodeGenerator> create(Lookup context) {
             JTextComponent component = context.lookup(JTextComponent.class);
             CompilationController controller = context.lookup(CompilationController.class);
@@ -81,11 +82,13 @@ public class SerialVersionGenerator implements CodeGenerator {
         this.type = type;
     }
 
+    @Override
     public String getDisplayName() {
         String msg = type == SvuidType.DEFAULT ? SVUID_DEFAULT_LABEL : SVUID_GENERATED_LABEL;
         return NbBundle.getMessage(getClass(), msg);
     }
 
+    @Override
     public void invoke() {
         JavaSource js = JavaSource.forDocument(component.getDocument());
         if (js != null) {
@@ -93,6 +96,7 @@ public class SerialVersionGenerator implements CodeGenerator {
                 final int caretOffset = component.getCaretPosition();
                 ModificationResult mr = js.runModificationTask(new Task<WorkingCopy>() {
 
+                    @Override
                     public void run(WorkingCopy copy) throws IOException {
                         copy.toPhase(JavaSource.Phase.ELEMENTS_RESOLVED);
                         TreePath path = copy.getTreeUtilities().pathFor(caretOffset);

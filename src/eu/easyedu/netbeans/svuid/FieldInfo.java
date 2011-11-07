@@ -18,19 +18,16 @@ public final class FieldInfo extends ElementInfo {
         super(name, modifiers, description);
     }
 
-
     @Override
     public boolean includeInSerialVersionUID() {
         return (access & Modifier.PRIVATE) == 0 || (access & (Modifier.STATIC | Modifier.TRANSIENT)) == 0;
     }
 
-
     @Override
     public int getSvuidAccess() {
-        return access & (Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED |
-                Modifier.STATIC | Modifier.FINAL | Modifier.VOLATILE | Modifier.TRANSIENT);
+        return access & (Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED
+                | Modifier.STATIC | Modifier.FINAL | Modifier.VOLATILE | Modifier.TRANSIENT);
     }
-
 
     @Override
     public String getSortingName() {

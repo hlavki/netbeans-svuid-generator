@@ -18,18 +18,15 @@ public class MethodInfo extends ElementInfo {
         super(name, modifiers, descriptor);
     }
 
-
     @Override
     public boolean includeInSerialVersionUID() {
         return (access & Modifier.PRIVATE) == 0;
     }
 
-
     @Override
     public int getSvuidAccess() {
         return access;
     }
-
 
     @Override
     public String getSortingName() {

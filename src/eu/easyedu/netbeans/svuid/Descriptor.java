@@ -21,6 +21,7 @@ import javax.lang.model.type.TypeVariable;
 public class Descriptor {
 
     private static final Logger log = Logger.getLogger(Descriptor.class.getName());
+
     /**
      * Converts a class name into the internal representation used in
      * the JVM.
@@ -47,13 +48,13 @@ public class Descriptor {
         return sb;
     }
 
-    public static final String of(TypeMirror type) {
+    public static String of(TypeMirror type) {
         StringBuffer sb = new StringBuffer();
         descriptor(sb, type);
         return sb.toString();
     }
 
-    private static final void descriptor(StringBuffer sb, TypeMirror type) {
+    private static void descriptor(StringBuffer sb, TypeMirror type) {
         switch (type.getKind()) {
             case ARRAY:
                 sb.append("[");
