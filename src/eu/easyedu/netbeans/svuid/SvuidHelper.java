@@ -82,8 +82,8 @@ public class SvuidHelper {
     }
 
     public static boolean needsSerialVersionUID(TypeElement type) {
-        return isSerializable(type) && !containsSerialVersionField(type) && type.getKind() != ElementKind.ENUM &&
-                !hasSuppressWarning(type, SvuidHelper.SUPPRESS_WARNING_SERIAL);
+        return isSerializable(type) && !containsSerialVersionField(type) && type.getKind() != ElementKind.ENUM
+                && !hasSuppressWarning(type, SvuidHelper.SUPPRESS_WARNING_SERIAL);
     }
 
     private static boolean isSerializable(TypeElement type) {
@@ -92,7 +92,7 @@ public class SvuidHelper {
         Iterator<TypeElement> it = parents.iterator();
         while (it.hasNext() && !result) {
             TypeElement parent = it.next();
-            StringBuffer qualifiedName = new StringBuffer(parent.getQualifiedName());
+            StringBuilder qualifiedName = new StringBuilder(parent.getQualifiedName());
             result = (parent.getKind().equals(ElementKind.INTERFACE) && SERIALIZABLE_CLASS.equals(qualifiedName.toString()));
         }
         if (log.isLoggable(Level.FINE)) {
@@ -117,8 +117,8 @@ public class SvuidHelper {
             }
         }
         if (log.isLoggable(Level.FINE)) {
-            log.fine("Class " + type.asType().toString() + (result ? "" : " does not") +
-                    " contain SuppressWarnings(serial) annotation");
+            log.fine("Class " + type.asType().toString() + (result ? "" : " does not")
+                    + " contain SuppressWarnings(serial) annotation");
         }
         return result;
     }

@@ -19,12 +19,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.prefs.Preferences;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import static javax.lang.model.element.Modifier.*;
 import javax.lang.model.element.TypeElement;
-import javax.swing.JComponent;
 import org.netbeans.api.java.source.CompilationInfo;
 import org.netbeans.api.java.source.GeneratorUtilities;
 import org.netbeans.api.java.source.JavaSource;
@@ -59,10 +57,12 @@ public class SerialVersionUidHint extends AbstractHint {
         super(true, true, AbstractHint.HintSeverity.WARNING);
     }
 
+    @Override
     public Set<Kind> getTreeKinds() {
         return TREE_KINDS;
     }
 
+    @Override
     public List<ErrorDescription> run(CompilationInfo info, TreePath treePath) {
         if (treePath == null || treePath.getLeaf().getKind() != Kind.CLASS) {
             return null;
@@ -108,18 +108,22 @@ public class SerialVersionUidHint extends AbstractHint {
         return ed == null ? Collections.<ErrorDescription>emptyList() : Collections.singletonList(ed);
     }
 
+    @Override
     public void cancel() {
         cancel.set(true);
     }
 
+    @Override
     public String getId() {
         return getClass().getName();
     }
 
+    @Override
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "DN_SerialVersionUID");//NOI18N
     }
 
+    @Override
     public String getDescription() {
         return NbBundle.getMessage(getClass(), "DSC_SerialVersionUID"); //NOI18N
     }
@@ -128,7 +132,6 @@ public class SerialVersionUidHint extends AbstractHint {
 //    public JComponent getCustomizer(final Preferences node) {
 //        return new SerialVersionUidHintCustomizer(node);
 //    }
-
     private static final class FixImpl implements Fix, Task<WorkingCopy> {
 
         private TreePathHandle handle;
@@ -141,6 +144,7 @@ public class SerialVersionUidHint extends AbstractHint {
             this.classType = classType;
         }
 
+        @Override
         public String getText() {
             switch (type) {
                 case GENERATED:
@@ -150,12 +154,14 @@ public class SerialVersionUidHint extends AbstractHint {
             }
         }
 
+        @Override
         public ChangeInfo implement() throws Exception {
             JavaSource js = JavaSource.forFileObject(handle.getFileObject());
             js.runModificationTask(this).commit();
             return null;
         }
 
+        @Override
         public void run(WorkingCopy copy) throws Exception {
             if (copy.toPhase(Phase.RESOLVED).compareTo(Phase.RESOLVED) < 0) {
                 return;
@@ -187,4 +193,3 @@ public class SerialVersionUidHint extends AbstractHint {
         return "Fix";
     }
 }
-

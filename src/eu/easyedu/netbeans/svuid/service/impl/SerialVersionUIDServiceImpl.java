@@ -39,6 +39,7 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
     private static final Logger log = Logger.getLogger(SerialVersionUIDServiceImpl.class.getName());
 
 
+    @Override
     public long generate(TypeElement el) {
         long result = 0L;
         ByteArrayOutputStream bout = null;

@@ -19,40 +19,33 @@ public abstract class ElementInfo implements Comparable<ElementInfo> {
     protected int access = 0;
     protected String descriptor;
 
-
     public ElementInfo(Name name, Set<Modifier> modifiers, String descriptor) {
-        this.name = nameToString(name);
+        this.name = new StringBuilder(name).toString();
         this.access = getAccessFlag(modifiers);
         this.descriptor = descriptor;
     }
-
 
     public ElementInfo(Name name, String description) {
         this(name, Collections.<Modifier>emptySet(), description);
     }
 
-
     public int getAccess() {
         return access;
     }
-
 
     public String getDescriptor() {
         return descriptor;
     }
 
-
     public String getName() {
         return name;
     }
-
 
     public boolean includeInSerialVersionUID() {
         return true;
     }
 
-
-    protected int getAccessFlag(Set<Modifier> modifiers) {
+    protected final int getAccessFlag(Set<Modifier> modifiers) {
         int accessFlag = 0;
         for (Modifier modifier : modifiers) {
             accessFlag |= toModifier(modifier);
@@ -60,30 +53,21 @@ public abstract class ElementInfo implements Comparable<ElementInfo> {
         return accessFlag;
     }
 
-
     @Override
     public String toString() {
         return name + "|" + descriptor + "|" + getSvuidAccess();
     }
 
-
+    @Override
     public int compareTo(ElementInfo o) {
         return this.getSortingName().compareTo(o.getSortingName());
     }
 
-
-    protected String nameToString(Name name) {
-        return new StringBuffer(name).toString();
-    }
-
-
     public abstract int getSvuidAccess();
-
 
     public abstract String getSortingName();
 
-
-    private final int toModifier(Modifier modifier) {
+    private int toModifier(Modifier modifier) {
         int result = 0;
         switch (modifier) {
             case ABSTRACT:
