@@ -109,7 +109,7 @@ public class SerialVersionGenerator implements CodeGenerator {
                                     Lookup.getDefault().lookup(SerialVersionUIDService.class);
                             svuid = svuidService.generate(typeElement);
                         }
-                        int idx = GeneratorUtils.findClassMemberIndex(copy, (ClassTree) path.getLeaf(), caretOffset);
+//                        int idx = GeneratorUtils.findClassMemberIndex(copy, (ClassTree) path.getLeaf(), caretOffset);
 
                         Set<Modifier> modifiers = EnumSet.of(PRIVATE, STATIC, FINAL);
                         TreeMaker make = copy.getTreeMaker();
@@ -117,7 +117,7 @@ public class SerialVersionGenerator implements CodeGenerator {
                                 SVUID_FIELD, make.Identifier("long"), make.Literal(Long.valueOf(svuid))); //NO18N
 
                         List<Tree> members = new ArrayList<Tree>(clazz.getMembers());
-                        members.add(idx, varTree);
+                        members.add(varTree);
                         ClassTree nue = make.Class(clazz.getModifiers(), clazz.getSimpleName(),
                                 clazz.getTypeParameters(), clazz.getExtendsClause(),
                                 clazz.getImplementsClause(), members);
