@@ -20,16 +20,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.NestingKind;
 import static javax.lang.model.element.Modifier.*;
+import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import org.netbeans.api.java.source.CompilationInfo;
+import org.netbeans.api.java.source.ElementHandle;
 import org.netbeans.api.java.source.GeneratorUtilities;
 import org.netbeans.api.java.source.JavaSource;
 import org.netbeans.api.java.source.JavaSource.Phase;
 import org.netbeans.api.java.source.Task;
 import org.netbeans.api.java.source.TreeMaker;
 import org.netbeans.api.java.source.TreePathHandle;
+import org.netbeans.api.java.source.TreeUtilities;
 import org.netbeans.api.java.source.WorkingCopy;
 import org.netbeans.modules.java.hints.spi.AbstractHint;
 import org.netbeans.modules.java.hints.spi.support.FixFactory;
@@ -75,8 +77,9 @@ public class SerialVersionUidHint extends AbstractHint {
         // Contrary to popular belief, abstract classes *should* define serialVersionUID,
         // according to the documentation of Serializable. It refers to "all classes".
         List<Fix> fixes = new ArrayList<Fix>();
-        fixes.add(new FixImpl(TreePathHandle.create(treePath, info), SvuidType.DEFAULT, type));
-        fixes.add(new FixImpl(TreePathHandle.create(treePath, info), SvuidType.GENERATED, type));
+        ElementHandle<TypeElement> elementHandle = ElementHandle.create(type);
+        fixes.add(new FixImpl(TreePathHandle.create(treePath, info), SvuidType.DEFAULT, elementHandle));
+        fixes.add(new FixImpl(TreePathHandle.create(treePath, info), SvuidType.GENERATED, elementHandle));
 
         String desc = NbBundle.getMessage(getClass(), "ERR_SerialVersionUID"); //NOI18N
         ErrorDescription ed = null;
@@ -136,9 +139,9 @@ public class SerialVersionUidHint extends AbstractHint {
 
         private TreePathHandle handle;
         private SvuidType type;
-        private TypeElement classType;
+        private ElementHandle<TypeElement> classType;
 
-        public FixImpl(TreePathHandle handle, SvuidType type, TypeElement classType) {
+        public FixImpl(TreePathHandle handle, SvuidType type, ElementHandle<TypeElement> classType) {
             this.handle = handle;
             this.type = type;
             this.classType = classType;
@@ -167,7 +170,7 @@ public class SerialVersionUidHint extends AbstractHint {
                 return;
             }
             TreePath treePath = handle.resolve(copy);
-            if (treePath == null || treePath.getLeaf().getKind() != Kind.CLASS) {
+            if (treePath == null || !TreeUtilities.CLASS_TREE_KINDS.contains(treePath.getLeaf().getKind())) {
                 return;
             }
             ClassTree classTree = (ClassTree) treePath.getLeaf();
@@ -178,7 +181,8 @@ public class SerialVersionUidHint extends AbstractHint {
             Long svuid = 1L;
             if (type.equals(SvuidType.GENERATED)) {
                 SerialVersionUIDService svuidService = Lookup.getDefault().lookup(SerialVersionUIDService.class);
-                svuid = svuidService.generate(classType);
+                TypeElement typeEl = classType.resolve(copy);
+                svuid = svuidService.generate(typeEl);
             }
             VariableTree svuidTree = make.Variable(make.Modifiers(modifiers), SVUID,
                     make.Identifier("long"), make.Literal(svuid)); //NO18N
