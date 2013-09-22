@@ -36,7 +36,7 @@ public class SvuidHelper {
     private static final Logger log = Logger.getLogger(SvuidHelper.class.getName());
     private static final String ERROR = "<error>"; //NOI18N
     private static final String SERIALIZABLE_CLASS = "java.io.Serializable";
-    public static String SUPPRESS_WARNING_SERIAL = "serial";
+    public static final String SUPPRESS_WARNING_SERIAL = "serial";
 
     private SvuidHelper() {
     }
@@ -45,7 +45,6 @@ public class SvuidHelper {
             final Set<VariableElement> staticFields) {
         final Trees trees = info.getTrees();
         new TreePathScanner<Void, Boolean>() {
-
             @Override
             public Void visitVariable(VariableTree node, Boolean p) {
                 if (ERROR.contentEquals(node.getName())) {
@@ -103,6 +102,7 @@ public class SvuidHelper {
 
     /**
      * check if contains SuppressWarnings with value serial
+     *
      * @param typeElement
      * @return
      */
