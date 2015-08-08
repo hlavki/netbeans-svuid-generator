@@ -8,11 +8,7 @@ import com.sun.source.tree.VariableTree;
 import com.sun.source.util.TreePath;
 import com.sun.source.util.TreePathScanner;
 import com.sun.source.util.Trees;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.lang.model.element.Element;
@@ -21,11 +17,11 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import static javax.lang.model.element.Modifier.*;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import org.netbeans.api.java.source.CompilationInfo;
-import org.netbeans.modules.java.editor.codegen.GeneratorUtils;
 
 /**
  *
@@ -87,7 +83,7 @@ public class SvuidHelper {
 
     private static boolean isSerializable(TypeElement type) {
         boolean result = false;
-        Collection<TypeElement> parents = GeneratorUtils.getAllParents(type);
+        Collection<TypeElement> parents = getAllParents(type);
         Iterator<TypeElement> it = parents.iterator();
         while (it.hasNext() && !result) {
             TypeElement parent = it.next();
@@ -96,6 +92,29 @@ public class SvuidHelper {
         }
         if (log.isLoggable(Level.FINE)) {
             log.fine("Class " + type.asType().toString() + (result ? " is" : " is not") + " serializable");
+        }
+        return result;
+    }
+
+    private static Collection<TypeElement> getAllParents(TypeElement of) {
+        Set<TypeElement> result = new HashSet<>();
+        for (TypeMirror t : of.getInterfaces()) {
+            TypeElement te = (TypeElement) ((DeclaredType) t).asElement();
+            if (te != null) {
+                result.add(te);
+                result.addAll(getAllParents(te));
+            } else {
+                log.log(Level.WARNING, "te=null, t={0}", t);
+            }
+        }
+
+        TypeMirror sup = of.getSuperclass();
+        TypeElement te = sup.getKind() == TypeKind.DECLARED ? (TypeElement) ((DeclaredType) sup).asElement() : null;
+        if (te != null) {
+            result.add(te);
+            result.addAll(getAllParents(te));
+        } else {
+            log.log(Level.WARNING, "te=null, t={0}", of);
         }
         return result;
     }
