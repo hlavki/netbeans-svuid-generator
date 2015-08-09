@@ -105,8 +105,8 @@ public class SerialVersionGenerator implements CodeGenerator {
                         long svuid = 1L;
                         if (type.equals(SvuidType.GENERATED)) {
                             TypeElement typeElement = (TypeElement) copy.getTrees().getElement(path);
-                            SerialVersionUIDService svuidService =
-                                    Lookup.getDefault().lookup(SerialVersionUIDService.class);
+                            SerialVersionUIDService svuidService
+                                    = Lookup.getDefault().lookup(SerialVersionUIDService.class);
                             svuid = svuidService.generate(typeElement);
                         }
 //                        int idx = GeneratorUtils.findClassMemberIndex(copy, (ClassTree) path.getLeaf(), caretOffset);
@@ -131,4 +131,3 @@ public class SerialVersionGenerator implements CodeGenerator {
         }
     }
 }
-
