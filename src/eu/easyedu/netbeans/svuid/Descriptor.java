@@ -23,22 +23,20 @@ public class Descriptor {
     private static final Logger log = Logger.getLogger(Descriptor.class.getName());
 
     /**
-     * Converts a class name into the internal representation used in
-     * the JVM.
+     * Converts a class name into the internal representation used in the JVM.
      *
-     * <p>Note that <code>toJvmName(toJvmName(s))</code> is equivalent
-     * to <code>toJvmName(s)</code>.
+     * <p>
+     * Note that <code>toJvmName(toJvmName(s))</code> is equivalent to <code>toJvmName(s)</code>.
      */
     private static String toJvmName(String classname) {
         return classname.replace('.', '/');
     }
 
     /**
-     * Converts a class name into the internal representation used in
-     * the JVM.
+     * Converts a class name into the internal representation used in the JVM.
      *
-     * <p>Note that <code>toJvmName(toJvmName(s))</code> is equivalent
-     * to <code>toJvmName(s)</code>.
+     * <p>
+     * Note that <code>toJvmName(toJvmName(s))</code> is equivalent to <code>toJvmName(s)</code>.
      */
     private static StringBuffer toJvmName(StringBuffer sb, Name clazzName) {
         for (int idx = 0; idx < clazzName.length(); idx++) {
