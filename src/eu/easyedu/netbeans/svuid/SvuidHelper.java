@@ -104,7 +104,7 @@ public class SvuidHelper {
                 result.add(te);
                 result.addAll(getAllParents(te));
             } else {
-                log.log(Level.WARNING, "te=null, t={0}", t);
+                log.log(Level.FINER, "te=null, t={0}", t);
             }
         }
 
@@ -114,7 +114,7 @@ public class SvuidHelper {
             result.add(te);
             result.addAll(getAllParents(te));
         } else {
-            log.log(Level.WARNING, "te=null, t={0}", of);
+            log.log(Level.FINER, "te=null, t={0}", of);
         }
         return result;
     }
