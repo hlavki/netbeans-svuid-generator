@@ -19,12 +19,7 @@ import javax.lang.model.element.Modifier;
 import static javax.lang.model.element.Modifier.*;
 import javax.lang.model.element.TypeElement;
 import javax.swing.text.JTextComponent;
-import org.netbeans.api.java.source.CompilationController;
-import org.netbeans.api.java.source.JavaSource;
-import org.netbeans.api.java.source.ModificationResult;
-import org.netbeans.api.java.source.Task;
-import org.netbeans.api.java.source.TreeMaker;
-import org.netbeans.api.java.source.WorkingCopy;
+import org.netbeans.api.java.source.*;
 import org.netbeans.modules.editor.java.Utilities;
 import org.netbeans.modules.java.editor.codegen.GeneratorUtils;
 import org.netbeans.spi.editor.codegen.CodeGenerator;
@@ -41,8 +36,8 @@ public class SerialVersionGenerator implements CodeGenerator {
     private static final String SVUID_DEFAULT_LABEL = "LBL_SerialVersionGenerator_default";
     private static final String SVUID_GENERATED_LABEL = "LBL_SerialVersionGenerator_generated";
     private static final String SVUID_FIELD = "serialVersionUID";
-    private SvuidType type;
-    private JTextComponent component;
+    private final SvuidType type;
+    private final JTextComponent component;
 
     public static class Factory implements CodeGenerator.Factory {
 
@@ -70,7 +65,7 @@ public class SerialVersionGenerator implements CodeGenerator {
             if (!SvuidHelper.needsSerialVersionUID(typeElement)) {
                 return Collections.emptyList();
             }
-            List<CodeGenerator> result = new ArrayList<CodeGenerator>();
+            List<CodeGenerator> result = new ArrayList<>();
             result.add(new SerialVersionGenerator(component, SvuidType.DEFAULT));
             result.add(new SerialVersionGenerator(component, SvuidType.GENERATED));
             return result;
@@ -113,15 +108,10 @@ public class SerialVersionGenerator implements CodeGenerator {
 
                         Set<Modifier> modifiers = EnumSet.of(PRIVATE, STATIC, FINAL);
                         TreeMaker make = copy.getTreeMaker();
-                        VariableTree varTree = make.Variable(make.Modifiers(modifiers),
+                        VariableTree var = make.Variable(make.Modifiers(modifiers),
                                 SVUID_FIELD, make.Identifier("long"), make.Literal(Long.valueOf(svuid))); //NO18N
 
-                        List<Tree> members = new ArrayList<Tree>(clazz.getMembers());
-                        members.add(varTree);
-                        ClassTree nue = make.Class(clazz.getModifiers(), clazz.getSimpleName(),
-                                clazz.getTypeParameters(), clazz.getExtendsClause(),
-                                clazz.getImplementsClause(), members);
-                        copy.rewrite(clazz, nue);
+                        copy.rewrite(clazz, GeneratorUtils.insertClassMembers(copy, clazz, Collections.singletonList(var), caretOffset));
                     }
                 });
                 GeneratorUtils.guardedCommit(component, mr);
