@@ -3,4 +3,4 @@ AutoUpdate-Show-In-Client: true
 OpenIDE-Module: com.orbaker.svuidgen
 OpenIDE-Module-Implementation-Version: 3
 OpenIDE-Module-Layer: com/orbaker/svuidgen/layer.xml
-OpenIDE-Module-Localizing-Bundle: com/orbaker/sbuidgen/Bundle.properties
+OpenIDE-Module-Localizing-Bundle: com/orbaker/svuidgen/Bundle.properties

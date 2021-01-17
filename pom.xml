@@ -19,10 +19,13 @@
                 <version>4.5</version>
                 <extensions>true</extensions>
                 <configuration>
+                    <installerPack200Enable>false</installerPack200Enable>
+                    <licenseFile>${basedir}/gpl-2.0.txt</licenseFile>
+                    <licenseName>GPL2</licenseName>
                     <moduleDependencies>
                         <dependency>
-                            <id>org.netbeans.modules:org-netbeans-modules-java-editor</id>
-                            <type>spec</type>
+                            <id>org.netbeans.modules::org-netbeans-modules-java-editor</id>
+                            <type>loose</type>
                         </dependency>
                     </moduleDependencies>
                 </configuration>
