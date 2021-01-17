@@ -1,0 +1,12 @@
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/com/orbaker/svuidgen/service/impl/SerialVersionUIDServiceImpl.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/com/orbaker/svuidgen/ElementInfo.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/com/orbaker/svuidgen/FieldInfo.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/com/orbaker/svuidgen/SerialVersionUidHintCustomizer.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/com/orbaker/svuidgen/Descriptor.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/com/orbaker/svuidgen/SerialVersionGenerator.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/com/orbaker/svuidgen/MethodInfo.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/com/orbaker/svuidgen/SvuidType.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/com/orbaker/svuidgen/ClassInfo.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/com/orbaker/svuidgen/service/SerialVersionUIDService.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/com/orbaker/svuidgen/SvuidHelper.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/com/orbaker/svuidgen/SerialVersionUidHint.java
