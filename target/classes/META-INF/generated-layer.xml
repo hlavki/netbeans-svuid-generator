@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="org-netbeans-modules-java-hints">
+        <folder name="code-hints">
+            <folder name="eu-easyedu-netbeans-svuid-SerialVersionUidHint.class">
+                <folder name="org-netbeans-spi-java-hints-Hint.annotation">
+                    <folder name="options">
+                        <!--eu.easyedu.netbeans.svuid.SerialVersionUidHint-->
+                        <attr name="item0" stringvalue="org.netbeans.spi.java.hints.Hint$Options.QUERY"/>
+                    </folder>
+                    <folder name="suppressWarnings">
+                        <!--eu.easyedu.netbeans.svuid.SerialVersionUidHint-->
+                        <attr name="item0" stringvalue="serial"/>
+                    </folder>
+                    <!--eu.easyedu.netbeans.svuid.SerialVersionUidHint-->
+                    <attr bundlevalue="eu.easyedu.netbeans.svuid.Bundle#DN_SerialVersionUID" name="displayName"/>
+                    <attr bundlevalue="eu.easyedu.netbeans.svuid.Bundle#DESC_SerialVersionUID" name="description"/>
+                    <attr name="id" stringvalue="eu.easyedu.netbeans.svuid.SerialVersionUidHint"/>
+                    <attr name="category" stringvalue="general"/>
+                    <attr boolvalue="true" name="enabled"/>
+                </folder>
+                <!--eu.easyedu.netbeans.svuid.SerialVersionUidHint-->
+                <folder name="run.method">
+                    <folder name="org-netbeans-spi-java-hints-TriggerTreeKind.annotation">
+                        <folder name="value">
+                            <!--eu.easyedu.netbeans.svuid.SerialVersionUidHint.run(org.netbeans.spi.java.hints.HintContext)-->
+                            <attr name="item0" stringvalue="com.sun.source.tree.Tree$Kind.CLASS"/>
+                        </folder>
+                        <!--eu.easyedu.netbeans.svuid.SerialVersionUidHint.run(org.netbeans.spi.java.hints.HintContext)-->
+                    </folder>
+                    <!--eu.easyedu.netbeans.svuid.SerialVersionUidHint.run(org.netbeans.spi.java.hints.HintContext)-->
+                </folder>
+            </folder>
+        </folder>
+    </folder>
+    <folder name="OptionsDialog">
+        <folder name="Keywords">
+            <file name="eu.easyedu.netbeans.svuid.SerialVersionUidHint">
+                <!--eu.easyedu.netbeans.svuid.SerialVersionUidHint-->
+                <attr name="location" stringvalue="Editor"/>
+                <attr bundlevalue="org.netbeans.modules.options.editor.Bundle#CTL_Hints_DisplayName" name="tabTitle"/>
+                <attr bundlevalue="eu.easyedu.netbeans.svuid.Bundle#DN_SerialVersionUID" name="keywords-1"/>
+                <attr bundlevalue="eu.easyedu.netbeans.svuid.Bundle#DESC_SerialVersionUID" name="keywords-2"/>
+                <attr name="keywords-3" stringvalue="serial"/>
+            </file>
+        </folder>
+    </folder>
+</filesystem>

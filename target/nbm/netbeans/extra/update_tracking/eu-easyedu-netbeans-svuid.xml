@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><module codename="eu.easyedu.netbeans.svuid">
+    <module_version install_time="1611026009678" last="true" origin="installer" specification_version="0.2">
+        <file crc="2521315720" name="config/Modules/eu-easyedu-netbeans-svuid.xml"/>
+        <file crc="77328906" name="modules/eu-easyedu-netbeans-svuid.jar"/>
+    </module_version>
+</module>
