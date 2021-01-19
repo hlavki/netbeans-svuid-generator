@@ -127,7 +127,7 @@ public class SerialVersionUidHint
         @Override
         protected String getText()
         {
-            if ( this.svuidType == SvuidType.GENERATED ) {
+            if ( this.svuidType.equals( SvuidType.GENERATED ) ) {
                 return NbBundle.getMessage( this.getClass(), "HINT_SerialVersionUID_Generated" );//NOI18N
             }
 
@@ -152,7 +152,7 @@ public class SerialVersionUidHint
             Set<Modifier>   modifiers   = EnumSet.of( Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL );
             Long            svuid       = 1L;
 
-            if ( this.svuidType == SvuidType.GENERATED ) {
+            if ( this.svuidType.equals( SvuidType.GENERATED ) ) {
                 SerialVersionUIDService svuidService = Lookup.getDefault().lookup( SerialVersionUIDService.class );
                 TypeElement             typeEl       = this.classType.resolve( copy );
 

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><module codename="com.orbaker.svuidgen">
-    <module_version install_time="1611024120394" last="true" origin="installer" specification_version="0.1">
-        <file crc="340082372" name="config/Modules/com-orbaker-svuidgen.xml"/>
-        <file crc="4051062395" name="modules/com-orbaker-svuidgen.jar"/>
-    </module_version>
-</module>
