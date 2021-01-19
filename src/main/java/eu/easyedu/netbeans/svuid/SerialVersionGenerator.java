@@ -44,7 +44,7 @@ import org.openide.util.NbBundle;
 
 /**
  *
- * @author hlavki
+ * @author hlavki &lt;iso@hlavki.eu&gt;
  */
 public class SerialVersionGenerator implements CodeGenerator
 {

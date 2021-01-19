@@ -52,6 +52,10 @@ import org.netbeans.spi.java.hints.TriggerTreeKind;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
+/**
+ *
+ * @author hlavki &lt;iso@hlavki.eu&gt;
+ */
 @Hint(displayName = "#DN_SerialVersionUID", description = "#DESC_SerialVersionUID", id = "eu.easyedu.netbeans.svuid.SerialVersionUidHint", category = "general", enabled = true, options = Options.QUERY, suppressWarnings = SvuidHelper.SUPPRESS_WARNING_SERIAL)
 public class SerialVersionUidHint
 {

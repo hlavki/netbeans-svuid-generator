@@ -19,7 +19,7 @@ package eu.easyedu.netbeans.svuid;
 
 /**
  *
- * @author hlavki
+ * @author hlavki &lt;iso@hlavki.eu&gt;
  */
 public enum SvuidType
 {

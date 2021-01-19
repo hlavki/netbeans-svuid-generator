@@ -29,7 +29,7 @@ import javax.lang.model.type.TypeVariable;
 
 /**
  *
- * @author hlavki
+ * @author hlavki &lt;iso@hlavki.eu&gt;
  */
 public class Descriptor
 {

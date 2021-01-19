@@ -23,7 +23,7 @@ import javax.lang.model.element.TypeElement;
 
 /**
  *
- * @author hlavki
+ * @author hlavki &lt;iso@hlavki.eu&gt;
  */
 public class ClassInfo extends ElementInfo
 {

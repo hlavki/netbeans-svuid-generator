@@ -37,7 +37,7 @@ import org.netbeans.api.java.source.CompilationInfo;
 
 /**
  *
- * @author hlavki
+ * @author hlavki &lt;iso@hlavki.eu&gt;
  */
 public class SvuidHelper
 {

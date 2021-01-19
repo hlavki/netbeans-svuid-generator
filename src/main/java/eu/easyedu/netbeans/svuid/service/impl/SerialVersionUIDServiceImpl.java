@@ -45,7 +45,7 @@ import org.openide.util.Exceptions;
 /**
  * See: http://java.sun.com/javase/6/docs/platform/serialization/spec/class.html See: ObjectStreamClass
  *
- * @author hlavki
+ * @author hlavki &lt;iso@hlavki.eu&gt;
  */
 public class SerialVersionUIDServiceImpl implements SerialVersionUIDService
 {

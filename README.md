@@ -15,5 +15,5 @@ Same license (GPL-2.0).
 
 Maven build, not ANT
 
-Converted code style to mine. If I have to maintain it, I want it to look
-like my code.
+Converted code style to mine. If there's a change I have to maintain it, I
+want it to look like my code.
