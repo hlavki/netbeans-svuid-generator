@@ -1,0 +1,12 @@
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/eu/easyedu/netbeans/svuid/ClassInfo.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/eu/easyedu/netbeans/svuid/MethodInfo.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/eu/easyedu/netbeans/svuid/service/SerialVersionUIDService.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/eu/easyedu/netbeans/svuid/SerialVersionGenerator.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/eu/easyedu/netbeans/svuid/SvuidHelper.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/eu/easyedu/netbeans/svuid/ElementInfo.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/eu/easyedu/netbeans/svuid/service/impl/SerialVersionUIDServiceImpl.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/eu/easyedu/netbeans/svuid/SvuidType.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/eu/easyedu/netbeans/svuid/FieldInfo.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/eu/easyedu/netbeans/svuid/Descriptor.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/eu/easyedu/netbeans/svuid/SerialVersionUidHint.java
+/home/torbaker/NetBeansProjects/svuidgen/src/main/java/eu/easyedu/netbeans/svuid/SerialVersionUidHintCustomizer.java
