@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: true
+OpenIDE-Module: com.orbaker.svuidgen
+OpenIDE-Module-Implementation-Version: 3
+OpenIDE-Module-Layer: com/orbaker/svuidgen/layer.xml
+OpenIDE-Module-Localizing-Bundle: com/orbaker/svuidgen/Bundle.properti
+ es
+OpenIDE-Module-Specification-Version: 0.1
+OpenIDE-Module-Build-Version: 202101190241
+OpenIDE-Module-Public-Packages: -
+OpenIDE-Module-Requires: org.openide.modules.ModuleFormat1
+OpenIDE-Module-Module-Dependencies: org.netbeans.api.annotations.commo
+ n/1 > 1.37, org.openide.util > 9.17, org.netbeans.modules.editor.lib2
+ /1 > 2.30.0.55.3, org.openide.filesystems > 9.20, org.netbeans.module
+ s.java.editor/1 = 12, org.netbeans.libs.javacapi > 8.31.0.3, org.netb
+ eans.spi.java.hints > 1.41.0.13.3.25.32.5.8, org.netbeans.modules.jav
+ a.source.base > 2.48.0.5.3.25.8.1, org.openide.util.lookup > 8.44, or
+ g.netbeans.spi.editor.hints/0 > 1.52.0.7.55
+

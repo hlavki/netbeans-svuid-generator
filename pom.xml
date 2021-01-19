@@ -24,8 +24,8 @@
                     <licenseName>GPL2</licenseName>
                     <moduleDependencies>
                         <dependency>
-                            <id>org.netbeans.modules::org-netbeans-modules-java-editor</id>
-                            <type>loose</type>
+                            <id>org.netbeans.modules:org-netbeans-modules-java-editor</id>
+                            <type>impl</type>
                         </dependency>
                     </moduleDependencies>
                 </configuration>
@@ -85,6 +85,7 @@
             <groupId>org.netbeans.modules</groupId>
             <artifactId>org-netbeans-modules-java-editor</artifactId>
             <version>${netbeans.platform}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
