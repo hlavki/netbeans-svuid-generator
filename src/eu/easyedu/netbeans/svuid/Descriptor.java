@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package eu.easyedu.netbeans.svuid;
 
 import java.util.List;
@@ -14,10 +10,6 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
-/**
- *
- * @author hlavki
- */
 public class Descriptor {
 
     private static final Logger log = Logger.getLogger(Descriptor.class.getName());
