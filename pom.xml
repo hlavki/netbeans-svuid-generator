@@ -194,19 +194,6 @@
                         </execution>
                     </executions>
                 </plugin>
-                <plugin>
-                    <artifactId>maven-gpg-plugin</artifactId>
-                    <version>3.0.1</version>
-                    <executions>
-                        <execution>
-                            <id>sign-artifacts</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>sign</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -230,6 +217,22 @@
                         <publicPackage>eu.hlavki.netbeans.svuid</publicPackage>
                         <publicPackage>eu.hlavki.netbeans.svuid.service</publicPackage>
                     </publicPackages>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <keyname>miso+appdev@hlavki.eu</keyname>
                 </configuration>
             </plugin>
             <plugin>
