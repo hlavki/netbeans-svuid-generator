@@ -32,9 +32,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git@github.com:hlavki/netbeans-svuid-generator.git</connection>
-        <tag>HEAD</tag>
         <url>https://github.com/hlavki/netbeans-svuid-generator</url>
+        <connection>scm:git:https://github.com:hlavki/netbeans-svuid-generator.git</connection>
+        <developerConnection>scm:git:git@github.com:hlavki/netbeans-svuid-generator.git</developerConnection>
     </scm>
 
     <issueManagement>
@@ -218,6 +218,12 @@
                         <publicPackage>eu.hlavki.netbeans.svuid.service</publicPackage>
                     </publicPackages>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
             <plugin>
                 <artifactId>maven-gpg-plugin</artifactId>
