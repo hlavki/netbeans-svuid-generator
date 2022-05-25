@@ -48,11 +48,6 @@
     </ciManagement>
 
     <distributionManagement>
-        <site>
-            <id>github</id>
-            <name>Maven Site Distribution</name>
-            <url>scm:git:git@github.com:hlavki/netbeans-svuid-generator.git</url>
-        </site>
         <repository>
             <id>ossrh</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
