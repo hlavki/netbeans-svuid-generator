@@ -207,6 +207,7 @@
                     <licenseName>Apache License, Version 2.0</licenseName>
                     <licenseFile>${basedir}/LICENSE-2.0.txt</licenseFile>
                     <distributionUrl>https://github.com/hlavki/netbeans-svuid-generator</distributionUrl>
+                    <codeNameBase>${project.groupId}.svuid.generator</codeNameBase>
                     <moduleDependencies>
                         <dependency>
                             <id>org.netbeans.modules:org-netbeans-modules-java-editor</id>
