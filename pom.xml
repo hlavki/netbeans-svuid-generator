@@ -30,6 +30,15 @@
             </roles>
         </developer>
     </developers>
+    
+    <profiles>
+        <profile>
+            <id>development-profile</id>
+            <properties>
+                <maven.dev.skip>true</maven.dev.skip>
+            </properties>
+        </profile>
+    </profiles>
 
     <scm>
         <url>https://github.com/hlavki/netbeans-svuid-generator</url>
@@ -65,6 +74,7 @@
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <netbeans.version>RELEASE210</netbeans.version>
+        <maven.dev.skip>false</maven.dev.skip>
     </properties>
 
     <dependencies>
@@ -125,7 +135,7 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.2.0</version>
                     <configuration>
                         <archive>
                             <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
@@ -177,6 +187,7 @@
                     <artifactId>maven-release-plugin</artifactId>
                     <version>3.0.1</version>
                     <configuration>
+                        <skip>${maven.dev.skip}</skip>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <tagNameFormat>v@{project.version}</tagNameFormat>
                     </configuration>
@@ -185,6 +196,7 @@
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>3.1.1</version>
                     <configuration>
+                        <skip>${maven.dev.skip}</skip>
                     </configuration>
                     <executions>
                         <execution>
@@ -210,6 +222,7 @@
                     </executions>
                     <configuration>
                         <keyname>miso+appdev@hlavki.eu</keyname>
+                        <skip>${maven.dev.skip}</skip>
                     </configuration>
                 </plugin>
                 <plugin>

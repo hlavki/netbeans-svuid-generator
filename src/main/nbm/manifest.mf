@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-AutoUpdate-Show-In-Client: true
-OpenIDE-Module: eu.hlavki.netbeans.sviud
-OpenIDE-Module-Layer: eu/hlavki/netbeans/svuid/layer.xml
-OpenIDE-Module-Localizing-Bundle: eu/hlavki/netbeans/sviud/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.3.1
