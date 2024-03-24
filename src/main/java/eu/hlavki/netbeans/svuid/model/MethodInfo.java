@@ -1,5 +1,6 @@
-package eu.hlavki.netbeans.svuid;
+package eu.hlavki.netbeans.svuid.model;
 
+import eu.hlavki.netbeans.svuid.model.ElementInfo;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 import javax.lang.model.element.Name;

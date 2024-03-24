@@ -1,9 +1,9 @@
 package eu.hlavki.netbeans.svuid.service.impl;
 
-import eu.hlavki.netbeans.svuid.ClassInfo;
-import eu.hlavki.netbeans.svuid.Descriptor;
-import eu.hlavki.netbeans.svuid.FieldInfo;
-import eu.hlavki.netbeans.svuid.MethodInfo;
+import eu.hlavki.netbeans.svuid.model.ClassInfo;
+import eu.hlavki.netbeans.svuid.model.Descriptor;
+import eu.hlavki.netbeans.svuid.model.FieldInfo;
+import eu.hlavki.netbeans.svuid.model.MethodInfo;
 import eu.hlavki.netbeans.svuid.service.SerialVersionUIDService;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -21,8 +21,8 @@ import static javax.lang.model.element.ElementKind.*;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import static javax.lang.model.util.ElementFilter.*;
 import javax.lang.model.type.TypeMirror;
+import static javax.lang.model.util.ElementFilter.*;
 import org.openide.util.Exceptions;
 
 /**
@@ -36,15 +36,13 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
     @Override
     public long generate(TypeElement el) {
         long result = 0L;
-        ByteArrayOutputStream bout;
-        DataOutputStream out = null;
-        try {
-            bout = new ByteArrayOutputStream();
-            out = new DataOutputStream(bout);
+        log.info("generate");
+
+        try (ByteArrayOutputStream bout= new ByteArrayOutputStream(); DataOutputStream out = new DataOutputStream(bout)) {
 
             // 1. write class name
             if (log.isLoggable(Level.FINE)) {
-                log.log(Level.FINE, "CLASS: {0}", el.asType().toString());
+                log.log(Level.FINE, "CLASS: {0}", el.asType());
             }
             ClassInfo clazzInfo = new ClassInfo(el);
             out.writeUTF(clazzInfo.getName());
@@ -159,20 +157,12 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
             }
         } catch (IOException | NoSuchAlgorithmException e) {
             Exceptions.printStackTrace(e);
-        } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    Exceptions.printStackTrace(e);
-                }
-            }
         }
         return result;
     }
 
     private List<String> getInterfaces(List<? extends TypeMirror> interfaces) {
-        List<String> result = new ArrayList<>();
+        List<String> result = new ArrayList<>(interfaces.size());
         for (TypeMirror type : interfaces) {
             result.add(stripGenerics(type.toString()));
         }
@@ -181,7 +171,7 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
     }
 
     private List<FieldInfo> getFields(List<? extends Element> elements) {
-        List<FieldInfo> result = new ArrayList<>();
+        List<FieldInfo> result = new ArrayList<>(elements.size());
         for (VariableElement elem : fieldsIn(elements)) {
             FieldInfo fieldInfo = new FieldInfo(elem.getSimpleName(), elem.getModifiers(), Descriptor.of(elem.asType()));
             if (fieldInfo.includeInSerialVersionUID()) {
@@ -193,14 +183,11 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
     }
 
     private boolean hasStaticInit(List<? extends Element> elements) {
-        for (Element e : elements) {
-            return STATIC_INIT.equals(e.getKind());
-        }
-        return false;
+        return !elements.isEmpty() && STATIC_INIT.equals(elements.get(0).getKind());
     }
 
     private List<MethodInfo> getConstructors(List<? extends Element> elements) {
-        List<MethodInfo> result = new ArrayList<>();
+        List<MethodInfo> result = new ArrayList<>(elements.size());
         for (ExecutableElement elem : constructorsIn(elements)) {
             MethodInfo info = new MethodInfo(elem.getSimpleName(), elem.getModifiers(), Descriptor.of(elem.asType()));
             if (info.includeInSerialVersionUID()) {
@@ -212,7 +199,7 @@ public class SerialVersionUIDServiceImpl implements SerialVersionUIDService {
     }
 
     private List<MethodInfo> getMethods(List<? extends Element> elements) {
-        List<MethodInfo> result = new ArrayList<>();
+        List<MethodInfo> result = new ArrayList<>(elements.size());
         for (ExecutableElement elem : methodsIn(elements)) {
             MethodInfo info = new MethodInfo(elem.getSimpleName(), elem.getModifiers(), Descriptor.of(elem.asType()));
             if (info.includeInSerialVersionUID()) {

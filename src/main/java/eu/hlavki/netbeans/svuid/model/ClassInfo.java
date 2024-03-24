@@ -1,4 +1,4 @@
-package eu.hlavki.netbeans.svuid;
+package eu.hlavki.netbeans.svuid.model;
 
 import java.lang.reflect.Modifier;
 import javax.lang.model.element.ElementKind;
@@ -21,8 +21,7 @@ public class ClassInfo extends ElementInfo {
 
     @Override
     public int getSvuidAccess() {
-        int modifier = access & (Modifier.PUBLIC | Modifier.FINAL | Modifier.INTERFACE | Modifier.ABSTRACT);
-        return modifier;
+        return access & (Modifier.PUBLIC | Modifier.FINAL | Modifier.INTERFACE | Modifier.ABSTRACT);
     }
 
     @Override

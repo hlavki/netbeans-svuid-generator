@@ -1,14 +1,15 @@
-package eu.hlavki.netbeans.svuid;
+package eu.hlavki.netbeans.svuid.ui;
 
 import java.util.prefs.Preferences;
 
 public class SerialVersionUidHintCustomizer extends javax.swing.JPanel {
 
     private static final long serialVersionUID = -892296196830595275L;
-    private final Preferences pref;
+    private final transient Preferences pref;
 
     /**
      * Creates new form SerialVersionUidHintCustomizer
+     * @param pref
      */
     public SerialVersionUidHintCustomizer(Preferences pref) {
         this.pref = pref;

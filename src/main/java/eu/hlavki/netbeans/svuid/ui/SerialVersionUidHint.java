@@ -1,4 +1,4 @@
-package eu.hlavki.netbeans.svuid;
+package eu.hlavki.netbeans.svuid.ui;
 
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.NewClassTree;
@@ -7,6 +7,8 @@ import com.sun.source.tree.Tree.Kind;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.util.SourcePositions;
 import com.sun.source.util.TreePath;
+import eu.hlavki.netbeans.svuid.SvuidHelper;
+import eu.hlavki.netbeans.svuid.SvuidType;
 import eu.hlavki.netbeans.svuid.service.SerialVersionUIDService;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -89,7 +91,6 @@ public class SerialVersionUidHint {
             long end = pos.getEndPosition(compilationInfo.getCompilationUnit(), clazzTree);
             span = new int[]{(int) start, (int) end};
         } else {
-//            fixes.addAll(FixFactory.createSuppressWarnings(compilationInfo, treePath, SvuidHelper.SUPPRESS_WARNING_SERIAL));
             span = compilationInfo.getTreeUtilities().findNameSpan((ClassTree) treePath.getLeaf());
         }
         ErrorDescription ed = ErrorDescriptionFactory.forSpan(ctx, span[0], span[1], desc, fixes);
@@ -97,12 +98,12 @@ public class SerialVersionUidHint {
         return Collections.singletonList(ed);
     }
 
-    private static final class JavaFixImpl extends JavaFix {
+    private static class JavaFixImpl extends JavaFix {
 
         private final SvuidType svuidType;
         private final ElementHandle<TypeElement> classType;
 
-        public JavaFixImpl(TreePathHandle tpHandle, SvuidType type,
+        JavaFixImpl(TreePathHandle tpHandle, SvuidType type,
                 ElementHandle<TypeElement> classType) {
             super(tpHandle);
             this.svuidType = type;
@@ -111,12 +112,10 @@ public class SerialVersionUidHint {
 
         @Override
         protected String getText() {
-            switch (svuidType) {
-            case GENERATED:
-                return NbBundle.getMessage(getClass(), "HINT_SerialVersionUID_Generated");//NOI18N
-            default:
-                return NbBundle.getMessage(getClass(), "HINT_SerialVersionUID");//NOI18N
-            }
+            return switch (svuidType) {
+                case GENERATED -> NbBundle.getMessage(getClass(), "HINT_SerialVersionUID_Generated");
+                default -> NbBundle.getMessage(getClass(), "HINT_SerialVersionUID");
+            };
         }
 
         @Override

@@ -10,9 +10,9 @@ import java.util.logging.Logger;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
+import static javax.lang.model.element.Modifier.*;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import static javax.lang.model.element.Modifier.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -89,7 +89,7 @@ public class SvuidHelper {
     }
 
     private static Collection<TypeElement> getAllParents(TypeElement of) {
-        Set<TypeElement> result = new HashSet<>();
+        Set<TypeElement> result = new HashSet<>(3);
         for (TypeMirror t : of.getInterfaces()) {
             TypeElement te = (TypeElement) ((DeclaredType) t).asElement();
             if (te != null) {
@@ -121,11 +121,8 @@ public class SvuidHelper {
         boolean result = false;
         SuppressWarnings annotation = type.getAnnotation(SuppressWarnings.class);
         if (annotation != null) {
-            String[] values = annotation.value();
-            int idx = 0;
-            while (idx < values.length && result == false) {
-                result = warning.equals(values[idx++]);
-            }
+            List<String> valuex = Arrays.asList(annotation.value());
+            result = valuex.stream().anyMatch(warning::equals);
         }
         if (log.isLoggable(Level.FINE)) {
             log.fine("Class " + type.asType().toString() + (result ? "" : " does not")

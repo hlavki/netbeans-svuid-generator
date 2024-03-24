@@ -3,6 +3,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <groupId>eu.hlavki.netbeans</groupId>
+    <artifactId>netbeans-svuid-generator</artifactId>
+    <version>3.1-SNAPSHOT</version>
+    <packaging>nbm</packaging>
 
     <name>NetBeans serial version uid generator</name>
     <description>Add default or generated serial version uid for java classes that implements java.io.Serializable</description>
@@ -15,10 +19,6 @@
         </license>
     </licenses>
 
-    <groupId>eu.hlavki.netbeans</groupId>
-    <artifactId>netbeans-svuid-generator</artifactId>
-    <version>3.0-SNAPSHOT</version>
-    <packaging>nbm</packaging>
 
     <developers>
         <developer>
@@ -59,12 +59,12 @@
     </distributionManagement>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>19</maven.compiler.source>
+        <maven.compiler.target>19</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <netbeans.version>RELEASE130</netbeans.version>
+        <netbeans.version>RELEASE210</netbeans.version>
     </properties>
 
     <dependencies>
@@ -113,6 +113,11 @@
             <artifactId>org-netbeans-modules-java-editor</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-modules</artifactId>
+            <version>RELEASE210</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -120,7 +125,7 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.2.2</version>
+                    <version>3.3.0</version>
                     <configuration>
                         <archive>
                             <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
@@ -135,14 +140,14 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M6</version>
+                    <version>3.2.5</version>
                     <configuration>
                         <trimStackTrace>false</trimStackTrace>
                     </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>3.2.1</version>
+                    <version>3.3.0</version>
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -154,7 +159,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.4.0</version>
+                    <version>3.6.3</version>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
@@ -170,7 +175,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>3.0.0-M5</version>
+                    <version>3.0.1</version>
                     <configuration>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <tagNameFormat>v@{project.version}</tagNameFormat>
@@ -178,7 +183,9 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.0.0-M2</version>
+                    <version>3.1.1</version>
+                    <configuration>
+                    </configuration>
                     <executions>
                         <execution>
                             <id>default-deploy</id>
@@ -191,7 +198,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-gpg-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.2.0</version>
                     <executions>
                         <execution>
                             <id>sign-artifacts</id>
@@ -223,7 +230,7 @@
             <plugin>
                 <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
-                <version>4.7</version>
+                <version>14.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <licenseName>Apache License, Version 2.0</licenseName>

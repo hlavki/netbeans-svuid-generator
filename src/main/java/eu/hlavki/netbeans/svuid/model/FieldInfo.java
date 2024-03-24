@@ -1,9 +1,11 @@
-package eu.hlavki.netbeans.svuid;
+package eu.hlavki.netbeans.svuid.model;
 
+import eu.hlavki.netbeans.svuid.model.ElementInfo;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 import javax.lang.model.element.Name;
 
+@SuppressWarnings("FinalClass")
 public final class FieldInfo extends ElementInfo {
 
     public FieldInfo(Name name, Set<javax.lang.model.element.Modifier> modifiers, String description) {

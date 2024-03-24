@@ -33,9 +33,6 @@ public class SerialVersionGenerator implements CodeGenerator {
 
     public static class Factory implements CodeGenerator.Factory {
 
-        public Factory() {
-        }
-
         @Override
         public List<? extends CodeGenerator> create(Lookup context) {
             JTextComponent component = context.lookup(JTextComponent.class);
@@ -96,14 +93,13 @@ public class SerialVersionGenerator implements CodeGenerator {
                                     = Lookup.getDefault().lookup(SerialVersionUIDService.class);
                             svuid = svuidService.generate(typeElement);
                         }
-//                        int idx = GeneratorUtils.findClassMemberIndex(copy, (ClassTree) path.getLeaf(), caretOffset);
 
                         Set<Modifier> modifiers = EnumSet.of(PRIVATE, STATIC, FINAL);
                         TreeMaker make = copy.getTreeMaker();
-                        VariableTree var = make.Variable(make.Modifiers(modifiers),
-                                SVUID_FIELD, make.Identifier("long"), make.Literal(Long.valueOf(svuid))); //NO18N
+                        VariableTree variable = make.Variable(make.Modifiers(modifiers),
+                                SVUID_FIELD, make.Identifier("long"), make.Literal(svuid)); //NO18N
 
-                        copy.rewrite(clazz, GeneratorUtils.insertClassMembers(copy, clazz, Collections.singletonList(var), caretOffset));
+                        copy.rewrite(clazz, GeneratorUtils.insertClassMembers(copy, clazz, Collections.singletonList(variable), caretOffset));
                     }
                 });
                 GeneratorUtils.guardedCommit(component, mr);
