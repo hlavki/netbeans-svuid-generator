@@ -68,12 +68,12 @@
     </distributionManagement>
 
     <properties>
-        <maven.compiler.source>19</maven.compiler.source>
-        <maven.compiler.target>19</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <netbeans.version>RELEASE210</netbeans.version>
+        <netbeans.version>RELEASE220</netbeans.version>
         <maven.dev.skip>false</maven.dev.skip>
     </properties>
 
