@@ -1,9 +1,9 @@
 package eu.hlavki.netbeans.svuid.service.impl;
 
-import eu.hlavki.netbeans.svuid.model.ClassInfo;
-import eu.hlavki.netbeans.svuid.model.Descriptor;
-import eu.hlavki.netbeans.svuid.model.FieldInfo;
-import eu.hlavki.netbeans.svuid.model.MethodInfo;
+import eu.hlavki.netbeans.svuid.ClassInfo;
+import eu.hlavki.netbeans.svuid.Descriptor;
+import eu.hlavki.netbeans.svuid.FieldInfo;
+import eu.hlavki.netbeans.svuid.MethodInfo;
 import eu.hlavki.netbeans.svuid.service.SerialVersionUIDService;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;

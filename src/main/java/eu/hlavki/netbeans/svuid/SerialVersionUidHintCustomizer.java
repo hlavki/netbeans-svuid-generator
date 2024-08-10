@@ -1,4 +1,4 @@
-package eu.hlavki.netbeans.svuid.ui;
+package eu.hlavki.netbeans.svuid;
 
 import java.util.prefs.Preferences;
 

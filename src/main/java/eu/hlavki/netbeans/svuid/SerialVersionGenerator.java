@@ -15,13 +15,14 @@ import javax.lang.model.element.Modifier;
 import static javax.lang.model.element.Modifier.*;
 import javax.lang.model.element.TypeElement;
 import javax.swing.text.JTextComponent;
+import org.netbeans.api.editor.mimelookup.MimeRegistration;
 import org.netbeans.api.java.source.CompilationController;
 import org.netbeans.api.java.source.JavaSource;
 import org.netbeans.api.java.source.ModificationResult;
 import org.netbeans.api.java.source.Task;
 import org.netbeans.api.java.source.TreeMaker;
+import org.netbeans.api.java.source.TreeUtilities;
 import org.netbeans.api.java.source.WorkingCopy;
-import org.netbeans.modules.editor.java.Utilities;
 import org.netbeans.modules.java.editor.codegen.GeneratorUtils;
 import org.netbeans.spi.editor.codegen.CodeGenerator;
 import org.openide.util.Exceptions;
@@ -36,15 +37,20 @@ public class SerialVersionGenerator implements CodeGenerator {
     private final SvuidType type;
     private final JTextComponent component;
 
+    @MimeRegistration(mimeType = "text/x-java", service = CodeGenerator.Factory.class)
     public static class Factory implements CodeGenerator.Factory {
 
         @Override
         public List<? extends CodeGenerator> create(Lookup context) {
             JTextComponent component = context.lookup(JTextComponent.class);
             CompilationController controller = context.lookup(CompilationController.class);
+            if (component == null || controller == null) {
+                return Collections.emptyList();
+            }
             TreePath path = context.lookup(TreePath.class);
-            path = Utilities.getPathElementOfKind(Tree.Kind.CLASS, path);
-            if (component == null || controller == null || path == null) {
+            final TreeUtilities tu = controller.getTreeUtilities();
+            path = tu.getPathElementOfKind(Tree.Kind.CLASS, path);
+            if (path == null) {
                 return Collections.emptyList();
             }
             try {
@@ -52,14 +58,14 @@ public class SerialVersionGenerator implements CodeGenerator {
             } catch (IOException e) {
                 return Collections.emptyList();
             }
-            TypeElement typeElement = (TypeElement) controller.getTrees().getElement(path);
+            final TypeElement typeElement = (TypeElement) controller.getTrees().getElement(path);
             if (typeElement == null || typeElement.getKind().isInterface()) {
                 return Collections.emptyList();
             }
             if (!SvuidHelper.needsSerialVersionUID(typeElement)) {
                 return Collections.emptyList();
             }
-            List<CodeGenerator> result = new ArrayList<>();
+            List<CodeGenerator> result = new ArrayList<>(2);
             result.add(new SerialVersionGenerator(component, SvuidType.DEFAULT));
             result.add(new SerialVersionGenerator(component, SvuidType.GENERATED));
             return result;
@@ -88,8 +94,9 @@ public class SerialVersionGenerator implements CodeGenerator {
                     @Override
                     public void run(WorkingCopy copy) throws IOException {
                         copy.toPhase(JavaSource.Phase.ELEMENTS_RESOLVED);
-                        TreePath path = copy.getTreeUtilities().pathFor(caretOffset);
-                        path = Utilities.getPathElementOfKind(Tree.Kind.CLASS, path);
+                        final TreeUtilities tu = copy.getTreeUtilities();
+                        TreePath path = tu.pathFor(caretOffset);
+                        path = tu.getPathElementOfKind(Tree.Kind.CLASS, path);
                         ClassTree clazz = (ClassTree) path.getLeaf();
                         long svuid = 1L;
                         if (type.equals(SvuidType.GENERATED)) {

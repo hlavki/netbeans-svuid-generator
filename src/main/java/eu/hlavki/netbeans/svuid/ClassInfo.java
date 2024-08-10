@@ -1,4 +1,4 @@
-package eu.hlavki.netbeans.svuid.model;
+package eu.hlavki.netbeans.svuid;
 
 import java.lang.reflect.Modifier;
 import javax.lang.model.element.ElementKind;

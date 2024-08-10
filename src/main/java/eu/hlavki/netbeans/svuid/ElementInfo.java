@@ -1,4 +1,4 @@
-package eu.hlavki.netbeans.svuid.model;
+package eu.hlavki.netbeans.svuid;
 
 import java.util.Collections;
 import java.util.Set;

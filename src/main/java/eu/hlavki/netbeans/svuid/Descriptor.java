@@ -1,4 +1,4 @@
-package eu.hlavki.netbeans.svuid.model;
+package eu.hlavki.netbeans.svuid;
 
 import java.util.List;
 import java.util.logging.Logger;

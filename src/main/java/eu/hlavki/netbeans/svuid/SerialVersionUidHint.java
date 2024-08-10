@@ -1,4 +1,4 @@
-package eu.hlavki.netbeans.svuid.ui;
+package eu.hlavki.netbeans.svuid;
 
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.NewClassTree;
@@ -7,8 +7,6 @@ import com.sun.source.tree.Tree.Kind;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.util.SourcePositions;
 import com.sun.source.util.TreePath;
-import eu.hlavki.netbeans.svuid.SvuidHelper;
-import eu.hlavki.netbeans.svuid.SvuidType;
 import eu.hlavki.netbeans.svuid.service.SerialVersionUIDService;
 import java.util.Collections;
 import java.util.EnumSet;
