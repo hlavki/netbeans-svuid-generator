@@ -84,7 +84,10 @@ public class SerialVersionUidHint {
                     clazzTree = ((NewClassTree) tree).getIdentifier();
                 }
             }
-            if (clazzTree == null) clazzTree = treePath.getParentPath().getLeaf(); // mark all implementation!
+            if (clazzTree == null) { 
+                // mark all implementation!
+                clazzTree = treePath.getParentPath().getLeaf();
+            } 
             long start = pos.getStartPosition(compilationInfo.getCompilationUnit(), clazzTree);
             long end = pos.getEndPosition(compilationInfo.getCompilationUnit(), clazzTree);
             span = new int[]{(int) start, (int) end};
