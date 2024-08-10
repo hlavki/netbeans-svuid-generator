@@ -126,7 +126,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-modules</artifactId>
-            <version>RELEASE210</version>
+            <version>${netbeans.version}</version>
         </dependency>
     </dependencies>
 
