@@ -1,6 +1,8 @@
 name: Java Build & Deploy
 
-on: [push]
+on:
+  push:
+  workflow_dispatch:
 
 jobs:
   build:
